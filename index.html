@@ -10,8 +10,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;1,400&family=DM+Mono&family=Lora:ital,wght@0,400;0,600&display=swap" rel="stylesheet">
 
     <style>
-        :root{--bg:#f7f4ef;--surface:#ffffff;--border:#ddd8ce;--text:#1a1712;--muted:#9b9184;--accent:#b8860b;--accent2:#c0552a}
-        body.dark{--bg:#0f0e0c;--surface:#1a1916;--border:#2e2b26;--text:#e8e0d0;--muted:#6b6558;--accent:#e8c57a;--accent2:#d4845a}
+        :root{--bg:#f7f4ef;--surface:#ffffff;--border:#ddd8ce;--text:#1a1712;--muted:#9b9184;--accent:#b8860b;--accent2:#c0552a;--card:#f0ece4;--dim:#c8c2b8}
+        body.dark{--bg:#0f0e0c;--surface:#1a1916;--border:#2e2b26;--text:#e8e0d0;--muted:#6b6558;--accent:#e8c57a;--accent2:#d4845a;--card:#222018;--dim:#3a3630}
         *{box-sizing:border-box;margin:0;padding:0}
         body{background:var(--bg);color:var(--text);font-family:'Fraunces',serif;padding:20px;transition:.3s}
         .container{max-width:600px;margin:0 auto}
@@ -46,14 +46,36 @@
 
         .header-btn{background:var(--surface);border:1px solid var(--border);padding:6px 10px;border-radius:8px;cursor:pointer}
 
-        /* Flashcards */
-        .flashcard-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;padding:20px}
-        .flashcard-box{background:var(--surface);border-radius:20px;padding:40px;max-width:420px;width:100%;text-align:center;border:1px solid var(--border)}
-        .flash-word{font-size:32px;margin-bottom:10px}
-        .flash-translation{font-size:26px;color:var(--accent);margin-top:10px}
-        .flash-controls{margin-top:25px;display:flex;justify-content:center;gap:10px}
-        .flash-controls button{padding:8px 14px;border-radius:8px;border:1px solid var(--border);background:var(--bg);cursor:pointer}
+        /* ── Flashcard overlay wrapper (file 2) ── */
+        .flashcard-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;padding:20px;z-index:100}
+        .flashcard-box{background:var(--surface);border-radius:20px;padding:30px 24px;max-width:500px;width:100%;text-align:center;border:1px solid var(--border)}
 
+        /* ── Flashcards (from file 1) ── */
+        .fc-wrap{display:flex;flex-direction:column;align-items:center;padding-top:4px}
+        .fc-prog{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);margin-bottom:20px;letter-spacing:.1em}
+        .fc-prog em{color:var(--text);font-style:normal}
+        .fc-scene{width:100%;max-width:460px;height:250px;perspective:1000px;cursor:pointer;margin-bottom:24px;-webkit-tap-highlight-color:transparent}
+        .fc-card{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .52s cubic-bezier(.4,0,.2,1)}
+        .fc-card.flipped{transform:rotateY(180deg)}
+        .fc-face{position:absolute;inset:0;border-radius:14px;border:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;backface-visibility:hidden;-webkit-backface-visibility:hidden;text-align:center;gap:8px}
+        .fc-front{background:var(--surface)}
+        .fc-back{background:var(--card);transform:rotateY(180deg)}
+        .fc-hint{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted)}
+        .fc-word-front{font-family:'Fraunces',serif;font-size:clamp(26px,7vw,38px);font-weight:300;line-height:1.1;color:var(--text)}
+        .fc-trad{font-family:'Lora',serif;font-size:clamp(20px,5vw,28px);font-style:italic;font-weight:600;color:var(--accent);line-height:1.2}
+        .fc-def-sm{font-family:'DM Mono',monospace;font-size:11px;font-weight:300;color:var(--muted);line-height:1.6;max-width:300px;letter-spacing:.02em}
+        .fc-nav{display:flex;gap:12px;align-items:center}
+        .nav-btn{width:44px;height:44px;border-radius:50%;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent}
+        .nav-btn:disabled{opacity:.3}
+        .nav-btn:active:not(:disabled){background:var(--card)}
+        .flip-btn{padding:10px 24px;border-radius:20px;border:1px solid var(--accent);background:transparent;color:var(--accent);font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;-webkit-tap-highlight-color:transparent}
+        .flip-btn:active{background:var(--accent);color:#fff}
+        .fc-dots{display:flex;gap:6px;margin-top:18px;flex-wrap:wrap;justify-content:center;max-width:300px}
+        .dot{width:7px;height:7px;border-radius:50%;background:var(--dim);cursor:pointer;-webkit-tap-highlight-color:transparent}
+        .dot.cur{background:var(--accent)}
+        .dot.seen{background:var(--muted)}
+        .fc-close{margin-top:20px;background:none;border:1px solid var(--border);color:var(--muted);padding:6px 16px;border-radius:8px;cursor:pointer;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.06em}
+        .fc-close:hover{border-color:var(--accent2);color:var(--accent2)}
     </style>
 
 </head>
@@ -81,24 +103,32 @@
 
 </div>
 
-<!-- Flashcards -->
-
+<!-- Flashcards (elaborate system from file 1) -->
 <div class="flashcard-overlay" id="flashOverlay">
-
     <div class="flashcard-box">
-
-        <div class="flash-word" id="flashWord"></div>
-        <div class="flash-translation" id="flashTranslation" style="display:none"></div>
-
-        <div class="flash-controls">
-            <button onclick="prevFlash()">◀</button>
-            <button onclick="flipFlash()">Voir</button>
-            <button onclick="nextFlash()">▶</button>
-            <button onclick="closeFlash()">✕</button>
+        <div class="fc-wrap">
+            <div class="fc-prog" id="fcProg"></div>
+            <div class="fc-scene" onclick="flipCard()">
+                <div class="fc-card" id="fcCard">
+                    <div class="fc-face fc-front">
+                        <div class="fc-hint">Appuyez pour révéler</div>
+                        <div class="fc-word-front" id="fcWord"></div>
+                    </div>
+                    <div class="fc-face fc-back">
+                        <div class="fc-trad" id="fcTrad"></div>
+                        <div class="fc-def-sm" id="fcDef"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="fc-nav">
+                <button class="nav-btn" id="fcPrev" onclick="fcGo(-1)">←</button>
+                <button class="flip-btn" id="flipBtnEl" onclick="flipCard()">Révéler</button>
+                <button class="nav-btn" id="fcNext" onclick="fcGo(1)">→</button>
+            </div>
+            <div class="fc-dots" id="fcDots"></div>
         </div>
-
+        <button class="fc-close" onclick="closeFlash()">✕ Fermer</button>
     </div>
-
 </div>
 
 <script>
@@ -255,66 +285,44 @@ ${d.example?`<span class="example">"${d.example}"</span>`:''}
 
     }
 
-    /* ------------------ FLASHCARDS ------------------ */
+    /* ------------------ FLASHCARDS (from file 1) ------------------ */
 
-    let flashIndex=0;
-    let showTranslation=false;
+    let fcIdx=0, fcFlipped=false, fcSeen=new Set();
 
     function openFlashcards(){
-
-        if(words.length===0){alert("Ajoute des mots d'abord");return}
-
-        flashIndex=0;
-        showTranslation=false;
-
-        updateFlash();
-
-        document.getElementById("flashOverlay").style.display="flex";
-
+        if(words.length===0){alert("Ajoute des mots d'abord");return;}
+        fcIdx=0; fcFlipped=false; fcSeen=new Set();
+        renderCards();
+        document.getElementById('flashOverlay').style.display='flex';
     }
 
     function closeFlash(){
-
-        document.getElementById("flashOverlay").style.display="none";
-
+        document.getElementById('flashOverlay').style.display='none';
     }
 
-    function updateFlash(){
-
-        const w=words[flashIndex];
-
-        const word=document.getElementById("flashWord");
-        const trans=document.getElementById("flashTranslation");
-
-        word.textContent=w.term;
-        trans.textContent=w.translation;
-
-        trans.style.display=showTranslation?"block":"none";
-
+    function renderCards(){
+        if(!words.length) return;
+        fcIdx=Math.min(fcIdx,words.length-1);
+        const c=words[fcIdx];
+        document.getElementById('fcProg').innerHTML=`<em>${fcIdx+1}</em> / ${words.length}${fcSeen.size>0?` · ${fcSeen.size} vu${fcSeen.size>1?'s':''}`:''}`;
+        document.getElementById('fcWord').textContent=c.term;
+        document.getElementById('fcTrad').textContent=c.translation;
+        const shortDef = c.details?.meanings?.[0]?.definitions?.[0]?.definition || '';
+        document.getElementById('fcDef').textContent = shortDef ? shortDef.slice(0,80)+(shortDef.length>80?'…':'') : '';
+        document.getElementById('fcCard').classList.toggle('flipped',fcFlipped);
+        document.getElementById('flipBtnEl').textContent=fcFlipped?'Masquer':'Révéler';
+        document.getElementById('fcPrev').disabled=fcIdx===0;
+        document.getElementById('fcNext').disabled=fcIdx===words.length-1;
+        if(words.length<=40){
+            document.getElementById('fcDots').innerHTML=words.map((_,i)=>
+                    `<div class="dot${i===fcIdx?' cur':fcSeen.has(i)?' seen':''}" onclick="fcJump(${i})"></div>`
+            ).join('');
+        }
     }
 
-    function flipFlash(){
-
-        showTranslation=!showTranslation;
-        updateFlash();
-
-    }
-
-    function nextFlash(){
-
-        flashIndex=(flashIndex+1)%words.length;
-        showTranslation=false;
-        updateFlash();
-
-    }
-
-    function prevFlash(){
-
-        flashIndex=(flashIndex-1+words.length)%words.length;
-        showTranslation=false;
-        updateFlash();
-
-    }
+    function flipCard(){ fcFlipped=!fcFlipped; fcSeen.add(fcIdx); renderCards(); }
+    function fcGo(d){ const n=fcIdx+d; if(n<0||n>=words.length)return; fcSeen.add(fcIdx); fcIdx=n; fcFlipped=false; renderCards(); }
+    function fcJump(i){ fcSeen.add(fcIdx); fcIdx=i; fcFlipped=false; renderCards(); }
 
     render();
 
