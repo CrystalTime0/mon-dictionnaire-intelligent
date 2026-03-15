@@ -3,265 +3,158 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" id="themeColor" content="#0f0e0c">
-<meta name="description" content="Mon dictionnaire personnel anglais-français">
-<title>Mon Dictionnaire Intelligent</title>
+<title>Mon Dico Pro</title>
 <link rel="manifest" href="manifest.json">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;1,9..144,300;1,9..144,600&family=DM+Mono:wght@300;400;500&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;1,400&family=DM+Mono&family=Lora:ital,wght@0,400;0,600&display=swap" rel="stylesheet">
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#0f0e0c;--surface:#1a1916;--card:#222018;--border:#2e2b26;
-  --text:#e8e0d0;--muted:#6b6558;--accent:#e8c57a;--accent2:#d4845a;--dim:#3a3630;
-  --safe-top:env(safe-area-inset-top,0px);--safe-bot:env(safe-area-inset-bottom,0px);
+:root {
+    --bg: #0f0e0c; --surface: #1a1916; --border: #2e2b26;
+    --text: #e8e0d0; --muted: #6b6558; --accent: #e8c57a; --accent2: #d4845a;
 }
-html,body{height:100%;font-size:16px;overscroll-behavior:none}
-body{background:var(--bg);color:var(--text);font-family:'Fraunces',Georgia,serif;-webkit-font-smoothing:antialiased;transition:background .25s,color .25s;padding-top:var(--safe-top);padding-bottom:var(--safe-bot)}
-body.light{--bg:#f7f4ef;--surface:#ffffff;--card:#f0ece4;--border:#ddd8ce;--text:#1a1712;--muted:#9b9184;--accent:#b8860b;--accent2:#c0552a;--dim:#c8c2b8}
-.app{max-width:560px;margin:0 auto;padding:0 18px 80px}
+body.light {
+    --bg: #f7f4ef; --surface: #ffffff; --border: #ddd8ce;
+    --text: #1a1712; --muted: #9b9184; --accent: #b8860b; --accent2: #c0552a;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: 'Fraunces', serif; padding: 20px; transition: 0.3s; }
+.container { max-width: 600px; margin: 0 auto; }
 
-/* Header & UI Components */
-.hdr{padding:28px 0 18px;display:flex;align-items:center;justify-content:space-between;gap:8px}
-.hdr h1{font-size:22px;font-weight:600;letter-spacing:-.3px}
-.hdr h1 em{font-style:italic;color:var(--accent)}
-.hdr-sub{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);margin-top:4px}
-.hdr-actions{display:flex;gap:6px;align-items:center}
-.pill{padding:7px 13px;font-family:'DM Mono',monospace;font-size:11px;border:1px solid var(--border);border-radius:20px;background:transparent;color:var(--muted);cursor:pointer;-webkit-tap-highlight-color:transparent}
-.pill.on{background:var(--accent);color:#0f0e0c;border-color:var(--accent)}
-body.light .pill.on{color:#fff}
-.icon-btn{width:34px;height:34px;border-radius:50%;border:1px solid var(--border);background:var(--card);cursor:pointer;display:flex;align-items:center;justify-content:center}
+/* Header & Input */
+.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.search-box { display: flex; gap: 8px; background: var(--surface); padding: 10px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 20px; }
+.search-box input { flex: 1; background: transparent; border: none; color: var(--text); font-size: 18px; outline: none; }
+.search-box button { background: var(--accent); border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; }
 
-/* Input Bar */
-.add-bar{display:flex;gap:8px;margin-bottom:10px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px;align-items:center}
-.add-input{flex:1;background:transparent;border:none;outline:none;font-family:'Fraunces',serif;font-size:18px;color:var(--text)}
-.add-go{width:36px;height:36px;border-radius:8px;background:var(--accent);border:none;cursor:pointer;color:#0f0e0c;display:flex;align-items:center;justify-content:center}
-body.light .add-go{color:#fff}
+/* Word Row */
+.word-card { background: var(--surface); border: 1px solid var(--border); border-radius: 15px; margin-bottom: 15px; overflow: hidden; }
+.word-header { padding: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+.word-title { font-size: 22px; font-weight: 600; }
+.word-content { padding: 0 15px 15px; border-top: 1px solid var(--border); animation: slideDown 0.3s ease-out; }
 
-/* Dictionary Rendering (Google Style) */
-.wrow{background:var(--surface);border:1px solid transparent;border-radius:12px;overflow:hidden;margin-bottom:8px}
-.wrow.open{border-color:var(--border);background:var(--surface)}
-.wrow-top{display:flex;align-items:center;padding:16px;cursor:pointer}
-.wrow-word{flex:1;font-size:20px;font-weight:400}
-.wrow-body{padding:0 16px 20px;animation:fadeSlide .2s ease}
-@keyframes fadeSlide{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+/* Google Style Styling */
+.translation { font-size: 24px; color: var(--accent); font-style: italic; margin: 15px 0; display: block; }
+.pos-block { margin-bottom: 20px; }
+.pos-title { font-family: 'Lora', serif; font-style: italic; color: var(--accent2); font-weight: 600; font-size: 16px; margin-bottom: 10px; display: block; }
+.definition-item { margin-bottom: 15px; padding-left: 5px; }
+.def-text { display: flex; gap: 10px; font-size: 15px; line-height: 1.5; }
+.def-num { color: var(--muted); font-family: 'DM Mono', monospace; font-size: 13px; margin-top: 2px; }
+.example { color: var(--muted); font-size: 14px; margin: 5px 0 5px 22px; display: block; }
 
-.trad-main{font-size:24px;font-style:italic;color:var(--accent);font-weight:600;margin-bottom:16px;display:block}
+/* Synonym Tags */
+.synonym-container { margin: 8px 0 0 22px; }
+.synonym-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+.synonym-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 5px; }
+.syn-tag { background: var(--bg); border: 1px solid var(--border); padding: 2px 10px; border-radius: 20px; font-size: 12px; color: var(--text); }
 
-/* Definition blocks */
-.dict-section{margin-bottom:20px}
-.dict-pos{font-family:'Lora',serif;font-style:italic;font-weight:600;font-size:15px;color:var(--accent2);margin-bottom:8px;display:block}
-.dict-entry{margin-bottom:14px;padding-left:4px}
-.dict-def-line{display:flex;gap:8px;line-height:1.5;margin-bottom:4px}
-.dict-num{font-family:'DM Mono',monospace;font-size:13px;color:var(--muted);flex-shrink:0;padding-top:2px}
-.dict-text{font-size:15px;color:var(--text);font-weight:300}
-.dict-ex{color:var(--muted);font-size:14px;margin:4px 0 8px 18px;display:block}
+.btn-del { background: none; border: 1px solid var(--border); color: var(--muted); padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 11px; margin-top: 15px; }
 
-/* Similar / Synonyms */
-.dict-similar-box{margin:8px 0 8px 18px}
-.similar-label{font-size:11px;text-transform:uppercase;letter-spacing:0.05em;color:var(--muted);margin-bottom:4px;display:block}
-.similar-tags{display:flex;flex-wrap:wrap;gap:6px}
-.sim-tag{font-size:12px;background:var(--card);border:1px solid var(--border);padding:2px 10px;border-radius:12px;color:var(--text)}
-
-.wrow-del{margin-top:15px;font-size:10px;color:var(--muted);background:none;border:1px solid var(--border);padding:4px 8px;border-radius:4px;cursor:pointer}
-
-/* Loader */
-.ring{width:16px;height:16px;border:2px solid rgba(0,0,0,.1);border-top-color:currentColor;border-radius:50%;animation:spin .6s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-
-/* Flashcards */
-.fc-wrap{display:flex;flex-direction:column;align-items:center;padding-top:20px}
-.fc-scene{width:100%;height:300px;perspective:1000px;cursor:pointer}
-.fc-card{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .5s}
-.fc-card.flipped{transform:rotateY(180deg)}
-.fc-face{position:absolute;inset:0;border-radius:20px;border:1px solid var(--border);backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px;text-align:center;background:var(--card)}
-.fc-back{transform:rotateY(180deg);background:var(--surface)}
-.fc-word-front{font-size:32px;font-weight:600}
-.fc-trad{font-size:24px;color:var(--accent);font-style:italic;margin-bottom:10px}
-.fc-def-sm{font-size:13px;color:var(--muted);line-height:1.4}
+@keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 </style>
 </head>
 <body>
-<div class="app">
-  <div id="mainApp">
-    <div class="hdr">
-      <div>
+<div class="container">
+    <div class="header">
         <h1>Mon <em>Dico</em></h1>
-        <p class="hdr-sub" id="wordCount">0 mots</p>
-      </div>
-      <div class="hdr-actions">
-        <button class="pill on" id="btnList" onclick="setMode('list')">Liste</button>
-        <button class="pill" id="btnCards" onclick="setMode('cards')">Révision</button>
-        <button class="icon-btn" onclick="toggleTheme()" id="themeBtn">☀️</button>
-      </div>
+        <button onclick="toggleTheme()" id="themeBtn" style="background:none; border:none; font-size:20px; cursor:pointer;">☀️</button>
     </div>
 
-    <div class="add-bar">
-      <input class="add-input" id="wordInput" type="text" placeholder="Entrez un mot anglais..." autocomplete="off">
-      <button class="add-go" id="addBtn" onclick="addWord()">→</button>
-    </div>
-    <div id="errMsg" style="display:none; color:var(--accent2); font-size:12px; margin-bottom:10px; padding:0 10px;"></div>
-
-    <div id="listMode">
-      <div class="list" id="wordList"></div>
+    <div class="search-box">
+        <input type="text" id="wordInput" placeholder="Rechercher un mot...">
+        <button id="addBtn" onclick="handleAdd()">Ajouter</button>
     </div>
 
-    <div id="cardsMode" style="display:none">
-      <div class="fc-wrap">
-        <div class="fc-scene" onclick="flipCard()">
-          <div class="fc-card" id="fcCard">
-            <div class="fc-face fc-front"><div class="fc-word-front" id="fcWord"></div></div>
-            <div class="fc-face fc-back">
-              <div class="fc-trad" id="fcTrad"></div>
-              <div class="fc-def-sm" id="fcDef"></div>
-            </div>
-          </div>
-        </div>
-        <div style="margin-top:20px; display:flex; gap:20px;">
-          <button class="icon-btn" onclick="fcGo(-1)">←</button>
-          <button class="pill" onclick="flipCard()">Révéler</button>
-          <button class="icon-btn" onclick="fcGo(1)">→</button>
-        </div>
-      </div>
-    </div>
-  </div>
+    <div id="wordsList"></div>
 </div>
 
 <script>
-const LS_KEY = 'mon_dico_v3';
-let words = JSON.parse(localStorage.getItem(LS_KEY) || '[]');
-let mode = 'list', openId = null, fcIdx = 0, fcFlipped = false;
+let words = JSON.parse(localStorage.getItem('dico_data') || '[]');
+let openWord = null;
 
-// APIs
-async function getTranslation(w) {
-  const r = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(w)}&langpair=en|fr`);
-  const d = await r.json();
-  return d.responseData.translatedText;
+async function handleAdd() {
+    const input = document.getElementById('wordInput');
+    const term = input.value.trim().toLowerCase();
+    if (!term || words.some(w => w.term === term)) return;
+
+    const btn = document.getElementById('addBtn');
+    btn.textContent = "...";
+    
+    try {
+        const [tradRes, dictRes] = await Promise.all([
+            fetch(`https://api.mymemory.translated.net/get?q=${term}&langpair=en|fr`),
+            fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${term}`)
+        ]);
+        
+        const tradData = await tradRes.json();
+        const dictData = await dictRes.json();
+        
+        const newEntry = {
+            id: Date.now(),
+            term: term,
+            translation: tradData.responseData.translatedText,
+            details: dictData[0] || null
+        };
+        
+        words.unshift(newEntry);
+        localStorage.setItem('dico_data', JSON.stringify(words));
+        input.value = '';
+        render();
+    } catch (e) {
+        alert("Erreur lors de la récupération");
+    } finally {
+        btn.textContent = "Ajouter";
+    }
 }
-
-async function getDictionary(w) {
-  const r = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(w)}`);
-  if(!r.ok) return [];
-  return await r.json();
-}
-
-async function addWord() {
-  const input = document.getElementById('wordInput');
-  const val = input.value.trim().toLowerCase();
-  if(!val || words.some(x => x.term === val)) return;
-
-  setLoading(true);
-  try {
-    const [trad, dict] = await Promise.all([getTranslation(val), getDictionary(val)]);
-    const entry = {
-      id: Date.now(),
-      term: val,
-      translation: trad,
-      data: dict[0] || null,
-      at: new Date()
-    };
-    words.unshift(entry);
-    save();
-    input.value = '';
-    render();
-  } catch(e) {
-    document.getElementById('errMsg').textContent = "Erreur de connexion";
-    document.getElementById('errMsg').style.display = 'block';
-  }
-  setLoading(false);
-}
-
-function setLoading(b) {
-  const btn = document.getElementById('addBtn');
-  btn.innerHTML = b ? '<div class="ring"></div>' : '→';
-  btn.disabled = b;
-}
-
-function save() { localStorage.setItem(LS_KEY, JSON.stringify(words)); }
 
 function render() {
-  document.getElementById('wordCount').textContent = `${words.length} mots`;
-  const list = document.getElementById('wordList');
-  list.innerHTML = words.map(w => `
-    <div class="wrow ${openId === w.id ? 'open' : ''}">
-      <div class="wrow-top" onclick="toggleRow(${w.id})">
-        <span class="wrow-word">${w.term}</span>
-        <span style="font-size:10px; color:var(--muted)">${openId === w.id ? '▲' : '▼'}</span>
-      </div>
-      ${openId === w.id ? `
-        <div class="wrow-body">
-          <span class="trad-main">${w.translation}</span>
-          ${buildDictUI(w.data)}
-          <button class="wrow-del" onclick="deleteWord(${w.id})">Supprimer ce mot</button>
-        </div>
-      ` : ''}
-    </div>
-  `).join('');
-}
-
-function buildDictUI(data) {
-  if(!data) return '<p style="color:var(--muted)">Définition non trouvée.</p>';
-  return data.meanings.map(m => `
-    <div class="dict-section">
-      <span class="dict-pos">${m.partOfSpeech}</span>
-      ${m.definitions.slice(0, 2).map((d, i) => `
-        <div class="dict-entry">
-          <div class="dict-def-line">
-            <span class="dict-num">${i+1}.</span>
-            <span class="dict-text">${d.definition}</span>
-          </div>
-          ${d.example ? `<span class="dict-ex">"${d.example}"</span>` : ''}
-          ${d.synonyms && d.synonyms.length ? `
-            <div class="dict-similar-box">
-              <span class="similar-label">Similar:</span>
-              <div class="similar-tags">
-                ${d.synonyms.slice(0, 8).map(s => `<span class="sim-tag">${s}</span>`).join('')}
-              </div>
+    const list = document.getElementById('wordsList');
+    list.innerHTML = words.map(w => `
+        <div class="word-card">
+            <div class="word-header" onclick="toggleWord(${w.id})">
+                <span class="word-title">${w.term}</span>
+                <span>${openWord === w.id ? '▲' : '▼'}</span>
             </div>
-          ` : ''}
+            ${openWord === w.id ? `
+                <div class="word-content">
+                    <span class="translation">${w.translation}</span>
+                    ${w.details ? renderDetails(w.details) : '<p>Aucun détail trouvé.</p>'}
+                    <button class="btn-del" onclick="deleteWord(${w.id})">Supprimer</button>
+                </div>
+            ` : ''}
         </div>
-      `).join('')}
-    </div>
-  `).join('');
+    `).join('');
 }
 
-function toggleRow(id) { openId = openId === id ? null : id; render(); }
-function deleteWord(id) { words = words.filter(x => x.id !== id); save(); render(); }
-
-function setMode(m) {
-  mode = m;
-  document.getElementById('listMode').style.display = m === 'list' ? 'block' : 'none';
-  document.getElementById('cardsMode').style.display = m === 'cards' ? 'block' : 'none';
-  document.getElementById('btnList').classList.toggle('on', m === 'list');
-  document.getElementById('btnCards').classList.toggle('on', m === 'cards');
-  if(m === 'cards') renderCard();
+function renderDetails(data) {
+    return data.meanings.map(m => `
+        <div class="pos-block">
+            <span class="pos-title">${m.partOfSpeech}</span>
+            ${m.definitions.slice(0, 3).map((d, i) => `
+                <div class="definition-item">
+                    <div class="def-text">
+                        <span class="def-num">${i + 1}.</span>
+                        <span>${d.definition}</span>
+                    </div>
+                    ${d.example ? `<span class="example">"${d.example}"</span>` : ''}
+                    ${d.synonyms && d.synonyms.length ? `
+                        <div class="synonym-container">
+                            <span class="synonym-label">Similar:</span>
+                            <div class="synonym-list">
+                                ${d.synonyms.slice(0, 5).map(s => `<span class="syn-tag">${s}</span>`).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('')}
+        </div>
+    `).join('');
 }
 
-function renderCard() {
-  if(!words.length) return;
-  const w = words[fcIdx];
-  document.getElementById('fcWord').textContent = w.term;
-  document.getElementById('fcTrad').textContent = w.translation;
-  document.getElementById('fcDef').textContent = w.data?.meanings[0]?.definitions[0]?.definition || '';
-  document.getElementById('fcCard').classList.toggle('flipped', fcFlipped);
-}
-
-function flipCard() { fcFlipped = !fcFlipped; renderCard(); }
-function fcGo(dir) {
-  fcIdx = (fcIdx + dir + words.length) % words.length;
-  fcFlipped = false;
-  renderCard();
-}
-
-function toggleTheme() {
-  document.body.classList.toggle('light');
-  const isLight = document.body.classList.contains('light');
-  document.getElementById('themeBtn').textContent = isLight ? '🌙' : '☀️';
-  document.getElementById('themeColor').content = isLight ? '#f7f4ef' : '#0f0e0c';
-}
+function toggleWord(id) { openWord = openWord === id ? null : id; render(); }
+function deleteWord(id) { words = words.filter(w => w.id !== id); localStorage.setItem('dico_data', JSON.stringify(words)); render(); }
+function toggleTheme() { document.body.classList.toggle('light'); }
 
 render();
 </script>
