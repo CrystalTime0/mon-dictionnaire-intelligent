@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -7,142 +8,313 @@
     <title>Mon Dico Pro</title>
     <link rel="manifest" href="manifest.json">
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;1,400&family=DM+Mono&family=Lora:ital,wght@0,400;0,600&display=swap" rel="stylesheet">
+
     <style>
-        /* Couleurs : Mode CLAIR par défaut */
-        :root { 
-            --bg: #f7f4ef; --surface: #ffffff; --border: #ddd8ce; 
-            --text: #1a1712; --muted: #9b9184; --accent: #b8860b; --accent2: #c0552a; 
-        }
-        /* Couleurs : Mode SOMBRE */
-        body.dark { 
-            --bg: #0f0e0c; --surface: #1a1916; --border: #2e2b26; 
-            --text: #e8e0d0; --muted: #6b6558; --accent: #e8c57a; --accent2: #d4845a; 
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: var(--bg); color: var(--text); font-family: 'Fraunces', serif; padding: 20px; transition: 0.3s; }
-        .container { max-width: 600px; margin: 0 auto; }
-        
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .search-box { display: flex; gap: 8px; background: var(--surface); padding: 10px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 20px; }
-        .search-box input { flex: 1; background: transparent; border: none; color: var(--text); font-size: 18px; outline: none; }
-        .search-box button { background: var(--accent); border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; color: white; }
-        
-        .word-card { background: var(--surface); border: 1px solid var(--border); border-radius: 15px; margin-bottom: 15px; overflow: hidden; }
-        .word-header { padding: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
-        .word-title { font-size: 22px; font-weight: 600; }
-        .word-content { padding: 0 15px 15px; border-top: 1px solid var(--border); }
-        .translation { font-size: 24px; color: var(--accent); font-style: italic; margin: 15px 0; display: block; }
-        .pos-block { margin-bottom: 20px; }
-        .pos-title { font-family: 'Lora', serif; font-style: italic; color: var(--accent2); font-weight: 600; font-size: 16px; margin-bottom: 10px; display: block; }
-        .definition-item { margin-bottom: 15px; padding-left: 5px; }
-        .def-text { display: flex; gap: 10px; font-size: 15px; line-height: 1.5; }
-        .def-num { color: var(--muted); font-family: 'DM Mono', monospace; font-size: 13px; margin-top: 2px; }
-        .example { color: var(--muted); font-size: 14px; margin: 5px 0 5px 22px; display: block; }
-        .synonym-container { margin: 8px 0 0 22px; }
-        .synonym-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
-        .synonym-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 5px; }
-        .syn-tag { background: var(--bg); border: 1px solid var(--border); padding: 2px 10px; border-radius: 20px; font-size: 12px; color: var(--text); }
-        .btn-del { background: none; border: 1px solid var(--border); color: var(--muted); padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 11px; margin-top: 15px; }
+        :root{--bg:#f7f4ef;--surface:#ffffff;--border:#ddd8ce;--text:#1a1712;--muted:#9b9184;--accent:#b8860b;--accent2:#c0552a}
+        body.dark{--bg:#0f0e0c;--surface:#1a1916;--border:#2e2b26;--text:#e8e0d0;--muted:#6b6558;--accent:#e8c57a;--accent2:#d4845a}
+        *{box-sizing:border-box;margin:0;padding:0}
+        body{background:var(--bg);color:var(--text);font-family:'Fraunces',serif;padding:20px;transition:.3s}
+        .container{max-width:600px;margin:0 auto}
+
+        .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;gap:10px}
+        .header-actions{display:flex;gap:10px;align-items:center}
+
+        .search-box{display:flex;gap:8px;background:var(--surface);padding:10px;border-radius:12px;border:1px solid var(--border);margin-bottom:20px}
+        .search-box input{flex:1;background:transparent;border:none;color:var(--text);font-size:18px;outline:none}
+        .search-box button{background:var(--accent);border:none;padding:8px 15px;border-radius:8px;cursor:pointer;font-weight:bold;color:white}
+
+        .word-card{background:var(--surface);border:1px solid var(--border);border-radius:15px;margin-bottom:15px;overflow:hidden}
+        .word-header{padding:15px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+        .word-title{font-size:22px;font-weight:600}
+        .word-content{padding:0 15px 15px;border-top:1px solid var(--border)}
+        .translation{font-size:24px;color:var(--accent);font-style:italic;margin:15px 0;display:block}
+
+        .pos-block{margin-bottom:20px}
+        .pos-title{font-family:'Lora',serif;font-style:italic;color:var(--accent2);font-weight:600;font-size:16px;margin-bottom:10px;display:block}
+
+        .definition-item{margin-bottom:15px;padding-left:5px}
+        .def-text{display:flex;gap:10px;font-size:15px;line-height:1.5}
+        .def-num{color:var(--muted);font-family:'DM Mono',monospace;font-size:13px;margin-top:2px}
+        .example{color:var(--muted);font-size:14px;margin:5px 0 5px 22px;display:block}
+
+        .synonym-container{margin:8px 0 0 22px}
+        .synonym-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+        .synonym-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:5px}
+        .syn-tag{background:var(--bg);border:1px solid var(--border);padding:2px 10px;border-radius:20px;font-size:12px;color:var(--text)}
+
+        .btn-del{background:none;border:1px solid var(--border);color:var(--muted);padding:5px 10px;border-radius:5px;cursor:pointer;font-size:11px;margin-top:15px}
+
+        .header-btn{background:var(--surface);border:1px solid var(--border);padding:6px 10px;border-radius:8px;cursor:pointer}
+
+        /* Flashcards */
+        .flashcard-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;padding:20px}
+        .flashcard-box{background:var(--surface);border-radius:20px;padding:40px;max-width:420px;width:100%;text-align:center;border:1px solid var(--border)}
+        .flash-word{font-size:32px;margin-bottom:10px}
+        .flash-translation{font-size:26px;color:var(--accent);margin-top:10px}
+        .flash-controls{margin-top:25px;display:flex;justify-content:center;gap:10px}
+        .flash-controls button{padding:8px 14px;border-radius:8px;border:1px solid var(--border);background:var(--bg);cursor:pointer}
+
     </style>
+
 </head>
+
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>Mon <em>Dico</em></h1>
-            <button onclick="toggleTheme()" id="themeBtn" style="background:none; border:none; font-size:20px; cursor:pointer;">🌙</button>
+
+<div class="container">
+
+    <div class="header">
+        <h1>Mon <em>Dico</em></h1>
+
+        <div class="header-actions">
+            <button class="header-btn" onclick="openFlashcards()">Flashcards</button>
+            <button onclick="toggleTheme()" id="themeBtn" style="background:none;border:none;font-size:20px;cursor:pointer">🌙</button>
         </div>
-        <div class="search-box">
-            <input type="text" id="wordInput" placeholder="Rechercher un mot...">
-            <button id="addBtn" onclick="handleAdd()">Ajouter</button>
-        </div>
-        <div id="wordsList"></div>
+
     </div>
 
-    <script>
-        let words = JSON.parse(localStorage.getItem('dico_data') || '[]');
-        let openWord = null;
+    <div class="search-box">
+        <input type="text" id="wordInput" placeholder="Rechercher un mot...">
+        <button id="addBtn" onclick="handleAdd()">Ajouter</button>
+    </div>
 
-        async function handleAdd() {
-            const input = document.getElementById('wordInput');
-            const term = input.value.trim().toLowerCase();
-            if (!term || words.some(w => w.term === term)) return;
-            const btn = document.getElementById('addBtn');
-            btn.textContent = "...";
-            try {
-                const [tradRes, dictRes] = await Promise.all([
-                    fetch(`https://api.mymemory.translated.net/get?q=${term}&langpair=en|fr`),
-                    fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${term}`)
-                ]);
-                const tradData = await tradRes.json();
-                const dictData = await dictRes.json();
-                const newEntry = {
-                    id: Date.now(),
-                    term: term,
-                    translation: tradData.responseData.translatedText,
-                    details: Array.isArray(dictData) ? dictData[0] : null
-                };
-                words.unshift(newEntry);
-                localStorage.setItem('dico_data', JSON.stringify(words));
-                input.value = '';
-                render();
-            } catch (e) { alert("Erreur lors de la récupération"); }
-            finally { btn.textContent = "Ajouter"; }
-        }
+    <div id="wordsList"></div>
 
-        function render() {
-            const list = document.getElementById('wordsList');
-            list.innerHTML = words.map(w => `
-                <div class="word-card">
-                    <div class="word-header" onclick="toggleWord(${w.id})">
-                        <span class="word-title">${w.term}</span>
-                        <span>${openWord === w.id ? '▲' : '▼'}</span>
-                    </div>
-                    ${openWord === w.id ? `
-                        <div class="word-content">
-                            <span class="translation">${w.translation}</span>
-                            ${w.details ? renderDetails(w.details) : '<p>Aucun détail trouvé.</p>'}
-                            <button class="btn-del" onclick="deleteWord(${w.id})">Supprimer</button>
-                        </div>
-                    ` : ''}
-                </div>
-            `).join('');
-        }
+</div>
 
-        function renderDetails(data) {
-            return data.meanings.map(m => `
-                <div class="pos-block">
-                    <span class="pos-title">${m.partOfSpeech}</span>
-                    ${m.definitions.slice(0, 3).map((d, i) => `
-                        <div class="definition-item">
-                            <div class="def-text">
-                                <span class="def-num">${i + 1}.</span>
-                                <span>${d.definition}</span>
-                            </div>
-                            ${d.example ? `<span class="example">"${d.example}"</span>` : ''}
-                            ${d.synonyms && d.synonyms.length ? `
-                                <div class="synonym-container">
-                                    <span class="synonym-label">Similar:</span>
-                                    <div class="synonym-list">
-                                        ${d.synonyms.slice(0, 5).map(s => `<span class="syn-tag">${s}</span>`).join('')}
-                                    </div>
-                                </div>
-                            ` : ''}
-                        </div>
-                    `).join('')}
-                </div>
-            `).join('');
-        }
+<!-- Flashcards -->
 
-        function toggleWord(id) { openWord = openWord === id ? null : id; render(); }
-        function deleteWord(id) { words = words.filter(w => w.id !== id); localStorage.setItem('dico_data', JSON.stringify(words)); render(); }
-        
-        function toggleTheme() {
-            const isDark = document.body.classList.toggle('dark');
-            document.getElementById('themeBtn').textContent = isDark ? '☀️' : '🌙';
-            document.getElementById('themeColor').content = isDark ? '#0f0e0c' : '#f7f4ef';
-        }
-        
+<div class="flashcard-overlay" id="flashOverlay">
+
+    <div class="flashcard-box">
+
+        <div class="flash-word" id="flashWord"></div>
+        <div class="flash-translation" id="flashTranslation" style="display:none"></div>
+
+        <div class="flash-controls">
+            <button onclick="prevFlash()">◀</button>
+            <button onclick="flipFlash()">Voir</button>
+            <button onclick="nextFlash()">▶</button>
+            <button onclick="closeFlash()">✕</button>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+    let words = JSON.parse(localStorage.getItem('dico_data') || '[]');
+    let openWord = null;
+
+    /* ------------------ ADD WORD ------------------ */
+
+    async function handleAdd(){
+
+        const input=document.getElementById('wordInput');
+        const term=input.value.trim().toLowerCase();
+
+        if(!term||words.some(w=>w.term===term))return;
+
+        const btn=document.getElementById('addBtn');
+        btn.textContent="...";
+
+        try{
+
+            /* NOUVELLE API TRADUCTION : LibreTranslate */
+
+            const tradRes=await fetch("https://libretranslate.de/translate",{
+                method:"POST",
+                headers:{"Content-Type":"application/json"},
+                body:JSON.stringify({
+                    q:term,
+                    source:"en",
+                    target:"fr",
+                    format:"text"
+                })
+            });
+
+            const tradData=await tradRes.json();
+
+            const dictRes=await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${term}`);
+            const dictData=await dictRes.json();
+
+            const newEntry={
+
+                id:Date.now(),
+                term:term,
+                translation:tradData.translatedText || "?",
+                details:Array.isArray(dictData)?dictData[0]:null
+
+            };
+
+            words.unshift(newEntry);
+
+            localStorage.setItem('dico_data',JSON.stringify(words));
+
+            input.value='';
+
+            render();
+
+        }catch(e){alert("Erreur lors de la récupération")}
+
+        finally{btn.textContent="Ajouter"}
+
+    }
+
+    /* ------------------ RENDER ------------------ */
+
+    function render(){
+
+        const list=document.getElementById('wordsList');
+
+        list.innerHTML=words.map(w=>`
+
+<div class="word-card">
+
+<div class="word-header" onclick="toggleWord(${w.id})">
+<span class="word-title">${w.term}</span>
+<span>${openWord===w.id?'▲':'▼'}</span>
+</div>
+
+${openWord===w.id?`
+
+<div class="word-content">
+
+<span class="translation">${w.translation}</span>
+
+${w.details?renderDetails(w.details):'<p>Aucun détail trouvé.</p>'}
+
+<button class="btn-del" onclick="deleteWord(${w.id})">Supprimer</button>
+
+</div>
+
+`:''}
+
+</div>
+
+`).join('');
+
+    }
+
+    function renderDetails(data){
+
+        return data.meanings.map(m=>`
+
+<div class="pos-block">
+
+<span class="pos-title">${m.partOfSpeech}</span>
+
+${m.definitions.slice(0,3).map((d,i)=>`
+
+<div class="definition-item">
+
+<div class="def-text">
+<span class="def-num">${i+1}.</span>
+<span>${d.definition}</span>
+</div>
+
+${d.example?`<span class="example">"${d.example}"</span>`:''}
+
+</div>
+
+`).join('')}
+
+</div>
+
+`).join('');
+
+    }
+
+    /* ------------------ WORD ACTIONS ------------------ */
+
+    function toggleWord(id){openWord=openWord===id?null:id;render();}
+
+    function deleteWord(id){
+
+        words=words.filter(w=>w.id!==id);
+
+        localStorage.setItem('dico_data',JSON.stringify(words));
+
         render();
-    </script>
+
+    }
+
+    /* ------------------ THEME ------------------ */
+
+    function toggleTheme(){
+
+        const isDark=document.body.classList.toggle('dark');
+
+        document.getElementById('themeBtn').textContent=isDark?'☀️':'🌙';
+
+        document.getElementById('themeColor').content=isDark?'#0f0e0c':'#f7f4ef';
+
+    }
+
+    /* ------------------ FLASHCARDS ------------------ */
+
+    let flashIndex=0;
+    let showTranslation=false;
+
+    function openFlashcards(){
+
+        if(words.length===0){alert("Ajoute des mots d'abord");return}
+
+        flashIndex=0;
+        showTranslation=false;
+
+        updateFlash();
+
+        document.getElementById("flashOverlay").style.display="flex";
+
+    }
+
+    function closeFlash(){
+
+        document.getElementById("flashOverlay").style.display="none";
+
+    }
+
+    function updateFlash(){
+
+        const w=words[flashIndex];
+
+        const word=document.getElementById("flashWord");
+        const trans=document.getElementById("flashTranslation");
+
+        word.textContent=w.term;
+        trans.textContent=w.translation;
+
+        trans.style.display=showTranslation?"block":"none";
+
+    }
+
+    function flipFlash(){
+
+        showTranslation=!showTranslation;
+        updateFlash();
+
+    }
+
+    function nextFlash(){
+
+        flashIndex=(flashIndex+1)%words.length;
+        showTranslation=false;
+        updateFlash();
+
+    }
+
+    function prevFlash(){
+
+        flashIndex=(flashIndex-1+words.length)%words.length;
+        showTranslation=false;
+        updateFlash();
+
+    }
+
+    render();
+
+</script>
+
 </body>
 </html>
