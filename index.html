@@ -1,206 +1,148 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" id="themeColor" content="#0f0e0c">
-<title>Dico Intelligent</title>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;1,400&family=DM+Mono&family=Lora:ital,wght@0,400;0,600&display=swap" rel="stylesheet">
-<style>
-:root {
-  --bg: #0f0e0c; --surface: #1a1916; --border: #2e2b26;
-  --text: #e8e0d0; --muted: #6b6558; --accent: #e8c57a; --accent2: #d4845a;
-}
-body.light {
-  --bg: #f7f4ef; --surface: #ffffff; --border: #ddd8ce;
-  --text: #1a1712; --muted: #9b9184; --accent: #b8860b; --accent2: #c0552a;
-}
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: var(--bg); color: var(--text); font-family: 'Fraunces', serif; padding: 15px; transition: 0.3s; line-height: 1.4; }
-.container { max-width: 550px; margin: 0 auto; }
-
-/* Recherche */
-.search-bar { display: flex; gap: 8px; background: var(--surface); padding: 8px; border-radius: 12px; border: 1px solid var(--border); margin: 20px 0; }
-.search-bar input { flex: 1; background: transparent; border: none; color: var(--text); font-size: 17px; outline: none; padding-left: 8px; }
-.search-bar button { background: var(--accent); border: none; padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; }
-
-/* Carte Mot */
-.card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; margin-bottom: 12px; overflow: hidden; }
-.card-head { padding: 16px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
-.card-head h2 { font-size: 20px; font-weight: 600; }
-.card-content { padding: 0 16px 20px; border-top: 1px solid var(--border); }
-
-/* Style Dictionnaire Google */
-.main-translation { font-size: 24px; color: var(--accent); font-style: italic; font-weight: 600; margin: 15px 0; display: block; }
-.pos-group { margin-bottom: 22px; }
-.pos-label { font-family: 'Lora', serif; font-style: italic; color: var(--accent2); font-weight: 600; font-size: 15px; margin-bottom: 8px; display: block; }
-.def-row { display: flex; gap: 10px; margin-bottom: 12px; align-items: flex-start; }
-.def-num { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--muted); padding-top: 3px; }
-.def-text { font-size: 15px; font-weight: 400; flex: 1; }
-.example { display: block; color: var(--muted); font-size: 14px; margin: 4px 0 8px 24px; font-style: normal; }
-
-/* Synonymes */
-.similar-box { margin-left: 24px; margin-top: 6px; }
-.similar-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; display: block; }
-.tags { display: flex; flex-wrap: wrap; gap: 5px; }
-.tag { background: var(--bg); border: 1px solid var(--border); padding: 2px 9px; border-radius: 12px; font-size: 12px; color: var(--text); }
-
-.del-btn { background: none; border: 1px solid var(--border); color: var(--muted); padding: 6px 12px; border-radius: 6px; font-size: 11px; margin-top: 10px; cursor: pointer; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" id="themeColor" content="#f7f4ef">
+    <title>Mon Dico Pro</title>
+    <link rel="manifest" href="manifest.json">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;1,400&family=DM+Mono&family=Lora:ital,wght@0,400;0,600&display=swap" rel="stylesheet">
+    <style>
+        /* Couleurs : Mode CLAIR par défaut */
+        :root { 
+            --bg: #f7f4ef; --surface: #ffffff; --border: #ddd8ce; 
+            --text: #1a1712; --muted: #9b9184; --accent: #b8860b; --accent2: #c0552a; 
+        }
+        /* Couleurs : Mode SOMBRE */
+        body.dark { 
+            --bg: #0f0e0c; --surface: #1a1916; --border: #2e2b26; 
+            --text: #e8e0d0; --muted: #6b6558; --accent: #e8c57a; --accent2: #d4845a; 
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: var(--bg); color: var(--text); font-family: 'Fraunces', serif; padding: 20px; transition: 0.3s; }
+        .container { max-width: 600px; margin: 0 auto; }
+        
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .search-box { display: flex; gap: 8px; background: var(--surface); padding: 10px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 20px; }
+        .search-box input { flex: 1; background: transparent; border: none; color: var(--text); font-size: 18px; outline: none; }
+        .search-box button { background: var(--accent); border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; color: white; }
+        
+        .word-card { background: var(--surface); border: 1px solid var(--border); border-radius: 15px; margin-bottom: 15px; overflow: hidden; }
+        .word-header { padding: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+        .word-title { font-size: 22px; font-weight: 600; }
+        .word-content { padding: 0 15px 15px; border-top: 1px solid var(--border); }
+        .translation { font-size: 24px; color: var(--accent); font-style: italic; margin: 15px 0; display: block; }
+        .pos-block { margin-bottom: 20px; }
+        .pos-title { font-family: 'Lora', serif; font-style: italic; color: var(--accent2); font-weight: 600; font-size: 16px; margin-bottom: 10px; display: block; }
+        .definition-item { margin-bottom: 15px; padding-left: 5px; }
+        .def-text { display: flex; gap: 10px; font-size: 15px; line-height: 1.5; }
+        .def-num { color: var(--muted); font-family: 'DM Mono', monospace; font-size: 13px; margin-top: 2px; }
+        .example { color: var(--muted); font-size: 14px; margin: 5px 0 5px 22px; display: block; }
+        .synonym-container { margin: 8px 0 0 22px; }
+        .synonym-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+        .synonym-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 5px; }
+        .syn-tag { background: var(--bg); border: 1px solid var(--border); padding: 2px 10px; border-radius: 20px; font-size: 12px; color: var(--text); }
+        .btn-del { background: none; border: 1px solid var(--border); color: var(--muted); padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 11px; margin-top: 15px; }
+    </style>
 </head>
 <body>
-<div class="container">
-  <header style="display:flex; justify-content:space-between; align-items:center;">
-    <h1 style="font-size:24px;">My<em>Dico</em></h1>
-    <button onclick="toggleTheme()" style="background:none; border:none; font-size:20px; cursor:pointer;">☀️</button>
-  </header>
-
-  <div class="search-bar">
-    <input type="text" id="wordIn" placeholder="Enter an English word...">
-    <button onclick="addWord()" id="addBtn">Add</button>
-  </div>
-
-  <div id="list"></div>
-</div>
-
-<script>
-let words = JSON.parse(localStorage.getItem('my_dico_v4') || '[]');
-let activeId = null;
-
-async function addWord() {
-  const input = document.getElementById('wordIn');
-  const term = input.value.trim().toLowerCase();
-  if(!term || words.some(w => w.term === term)) return;
-
-  const btn = document.getElementById('addBtn');
-  btn.textContent = "...";
-
-  try {
-    const [tRes, dRes] = await Promise.all([
-      fetch(`https://api.mymemory.translated.net/get?q=${term}&langpair=en|fr`),
-      fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${term}`)
-    ]);
-    const tData = await tRes.json();
-    const dData = await dRes.json();
-
-    const entry = {
-      id: Date.now(),
-      term: term,
-      translation: tData.responseData.translatedText,
-      dict: dData[0] || null
-    };
-
-    words.unshift(entry);
-    localStorage.setItem('my_dico_v4', JSON.stringify(words));
-    input.value = '';
-    render();
-  } catch(e) { alert("Error fetching data"); }
-  btn.textContent = "Add";
-}
-
-function render() {
-  const container = document.getElementById('list');
-  container.innerHTML = words.map(w => `
-    <div class="card">
-      <div class="card-head" onclick="toggle(${w.id})">
-        <h2>${w.term}</h2>
-        <span style="font-size:12px; color:var(--muted)">${activeId === w.id ? '▲' : '▼'}</span>
-      </div>
-      ${activeId === w.id ? `
-        <div class="card-content">
-          <span class="main-translation">${w.translation}</span>
-          ${w.dict ? renderDict(w.dict) : '<p>No definitions found.</p>'}
-          <button class="del-btn" onclick="del(${w.id})">Delete word</button>
+    <div class="container">
+        <div class="header">
+            <h1>Mon <em>Dico</em></h1>
+            <button onclick="toggleTheme()" id="themeBtn" style="background:none; border:none; font-size:20px; cursor:pointer;">🌙</button>
         </div>
-      ` : ''}
+        <div class="search-box">
+            <input type="text" id="wordInput" placeholder="Rechercher un mot...">
+            <button id="addBtn" onclick="handleAdd()">Ajouter</button>
+        </div>
+        <div id="wordsList"></div>
     </div>
-  `).join('');
-}
 
-function renderDict(data) {
-  return data.meanings.map(m => `
-    <div class="pos-group">
-      <span class="pos-label">${m.partOfSpeech}</span>
-      ${m.definitions.slice(0, 3).map((d, i) => `
-        <div class="def-row">
-          <span class="def-num">${i + 1}.</span>
-          <div class="def-text">
-            ${d.definition}
-            ${d.example ? `<span class="example">"${d.example}"</span>` : ''}
-            ${d.synonyms && d.synonyms.length ? `
-              <div class="similar-box">
-                <span class="similar-label">Similar:</span>
-                <div class="tags">${d.synonyms.slice(0, 6).map(s => `<span class="tag">${s}</span>`).join('')}</div>
-              </div>
-            ` : ''}
-          </div>
-        </div>
-      `).join('')}
-    </div>
-  `).join('');
-}
+    <script>
+        let words = JSON.parse(localStorage.getItem('dico_data') || '[]');
+        let openWord = null;
 
-function toggle(id) { activeId = activeId === id ? null : id; render(); }
-function del(id) { words = words.filter(w => w.id !== id); localStorage.setItem('my_dico_v4', JSON.stringify(words)); render(); }
-function toggleTheme() { document.body.classList.toggle('light'); }
-render();
-</script>
-</body>
-</html>        btn.textContent = "Ajouter";
-    }
-}
+        async function handleAdd() {
+            const input = document.getElementById('wordInput');
+            const term = input.value.trim().toLowerCase();
+            if (!term || words.some(w => w.term === term)) return;
+            const btn = document.getElementById('addBtn');
+            btn.textContent = "...";
+            try {
+                const [tradRes, dictRes] = await Promise.all([
+                    fetch(`https://api.mymemory.translated.net/get?q=${term}&langpair=en|fr`),
+                    fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${term}`)
+                ]);
+                const tradData = await tradRes.json();
+                const dictData = await dictRes.json();
+                const newEntry = {
+                    id: Date.now(),
+                    term: term,
+                    translation: tradData.responseData.translatedText,
+                    details: Array.isArray(dictData) ? dictData[0] : null
+                };
+                words.unshift(newEntry);
+                localStorage.setItem('dico_data', JSON.stringify(words));
+                input.value = '';
+                render();
+            } catch (e) { alert("Erreur lors de la récupération"); }
+            finally { btn.textContent = "Ajouter"; }
+        }
 
-function render() {
-    const list = document.getElementById('wordsList');
-    list.innerHTML = words.map(w => `
-        <div class="word-card">
-            <div class="word-header" onclick="toggleWord(${w.id})">
-                <span class="word-title">${w.term}</span>
-                <span>${openWord === w.id ? '▲' : '▼'}</span>
-            </div>
-            ${openWord === w.id ? `
-                <div class="word-content">
-                    <span class="translation">${w.translation}</span>
-                    ${w.details ? renderDetails(w.details) : '<p>Aucun détail trouvé.</p>'}
-                    <button class="btn-del" onclick="deleteWord(${w.id})">Supprimer</button>
-                </div>
-            ` : ''}
-        </div>
-    `).join('');
-}
-
-function renderDetails(data) {
-    return data.meanings.map(m => `
-        <div class="pos-block">
-            <span class="pos-title">${m.partOfSpeech}</span>
-            ${m.definitions.slice(0, 3).map((d, i) => `
-                <div class="definition-item">
-                    <div class="def-text">
-                        <span class="def-num">${i + 1}.</span>
-                        <span>${d.definition}</span>
+        function render() {
+            const list = document.getElementById('wordsList');
+            list.innerHTML = words.map(w => `
+                <div class="word-card">
+                    <div class="word-header" onclick="toggleWord(${w.id})">
+                        <span class="word-title">${w.term}</span>
+                        <span>${openWord === w.id ? '▲' : '▼'}</span>
                     </div>
-                    ${d.example ? `<span class="example">"${d.example}"</span>` : ''}
-                    ${d.synonyms && d.synonyms.length ? `
-                        <div class="synonym-container">
-                            <span class="synonym-label">Similar:</span>
-                            <div class="synonym-list">
-                                ${d.synonyms.slice(0, 5).map(s => `<span class="syn-tag">${s}</span>`).join('')}
-                            </div>
+                    ${openWord === w.id ? `
+                        <div class="word-content">
+                            <span class="translation">${w.translation}</span>
+                            ${w.details ? renderDetails(w.details) : '<p>Aucun détail trouvé.</p>'}
+                            <button class="btn-del" onclick="deleteWord(${w.id})">Supprimer</button>
                         </div>
                     ` : ''}
                 </div>
-            `).join('')}
-        </div>
-    `).join('');
-}
+            `).join('');
+        }
 
-function toggleWord(id) { openWord = openWord === id ? null : id; render(); }
-function deleteWord(id) { words = words.filter(w => w.id !== id); localStorage.setItem('dico_data', JSON.stringify(words)); render(); }
-function toggleTheme() { document.body.classList.toggle('light'); }
+        function renderDetails(data) {
+            return data.meanings.map(m => `
+                <div class="pos-block">
+                    <span class="pos-title">${m.partOfSpeech}</span>
+                    ${m.definitions.slice(0, 3).map((d, i) => `
+                        <div class="definition-item">
+                            <div class="def-text">
+                                <span class="def-num">${i + 1}.</span>
+                                <span>${d.definition}</span>
+                            </div>
+                            ${d.example ? `<span class="example">"${d.example}"</span>` : ''}
+                            ${d.synonyms && d.synonyms.length ? `
+                                <div class="synonym-container">
+                                    <span class="synonym-label">Similar:</span>
+                                    <div class="synonym-list">
+                                        ${d.synonyms.slice(0, 5).map(s => `<span class="syn-tag">${s}</span>`).join('')}
+                                    </div>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `).join('')}
+                </div>
+            `).join('');
+        }
 
-render();
-</script>
+        function toggleWord(id) { openWord = openWord === id ? null : id; render(); }
+        function deleteWord(id) { words = words.filter(w => w.id !== id); localStorage.setItem('dico_data', JSON.stringify(words)); render(); }
+        
+        function toggleTheme() {
+            const isDark = document.body.classList.toggle('dark');
+            document.getElementById('themeBtn').textContent = isDark ? '☀️' : '🌙';
+            document.getElementById('themeColor').content = isDark ? '#0f0e0c' : '#f7f4ef';
+        }
+        
+        render();
+    </script>
 </body>
 </html>
