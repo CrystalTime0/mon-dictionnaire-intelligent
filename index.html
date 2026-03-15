@@ -83,10 +83,11 @@
         .tree-folder.open .tree-caret{transform:rotate(90deg)}
         .tree-folder-lbl{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
         .tree-count{font-size:10px;color:var(--muted);margin-left:auto;flex-shrink:0}
-        .tree-del{opacity:0;background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:0 3px;line-height:1;flex-shrink:0;transition:opacity .15s}
-        .tree-folder-head:hover .tree-del,
-        .tree-item:hover .tree-del{opacity:1}
-        .tree-del:hover{color:var(--accent2)}
+        .tree-del{opacity:.35;background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;padding:0 2px;line-height:1;flex-shrink:0;transition:opacity .15s}
+        .tree-del:hover{opacity:1;color:var(--accent2)}
+        .tree-edit{opacity:.35;background:none;border:none;color:var(--muted);cursor:pointer;font-size:12px;padding:0 2px;line-height:1;flex-shrink:0;transition:opacity .15s}
+        .tree-edit:hover{opacity:1;color:var(--accent)}
+        .tree-rename-input{flex:1;background:var(--card);border:1px solid var(--accent);border-radius:5px;padding:2px 6px;font-family:'DM Mono',monospace;font-size:11px;color:var(--text);outline:none;min-width:0}
         .tree-children{padding-left:0;display:none;border-left:2px solid var(--border);margin-left:24px}
         .tree-folder.open .tree-children{display:block}
 
@@ -258,7 +259,6 @@
 
         let html = '';
 
-        // "Tout" row
         const totalCount = words.length;
         html += `<div class="tree-all${activeListId===null?' active':''}" onclick="setActiveList(null);closeSidebar()">
         📋 Tout
@@ -267,18 +267,17 @@
 
         if(rootLists.length || folders.length) html += '<div class="tree-divider"></div>';
 
-        // Root-level lists (no parent folder)
         rootLists.forEach(l => {
             const count = words.filter(w=>w.listId===l.id).length;
-            html += `<div class="tree-item${activeListId===l.id?' active':''}" onclick="setActiveList(${l.id});closeSidebar()">
+            html += `<div class="tree-item${activeListId===l.id?' active':''}" id="ti_${l.id}" onclick="setActiveList(${l.id});closeSidebar()">
             <span>📄</span>
-            <span class="tree-item-lbl">${esc(l.name)}</span>
+            <span class="tree-item-lbl" id="lbl_${l.id}">${esc(l.name)}</span>
             <span class="tree-count">${count}</span>
-            <button class="tree-del" onclick="event.stopPropagation();deleteNode(${l.id})" title="Supprimer">×</button>
+            <button class="tree-edit" onclick="event.stopPropagation();startRename(${l.id})" title="Renommer">✏</button>
+            <button class="tree-del"  onclick="event.stopPropagation();deleteNode(${l.id})"  title="Supprimer">×</button>
         </div>`;
         });
 
-        // Folders with their children
         folders.forEach(f => {
             const children = nodes.filter(n => !n.isFolder && n.parentId === f.id);
             const folderCount = words.filter(w => children.some(c=>c.id===w.listId)).length;
@@ -286,18 +285,20 @@
             html += `<div class="tree-folder${isOpen?' open':''}" id="tf_${f.id}">
             <div class="tree-folder-head" onclick="toggleFolder(${f.id})">
                 <span class="tree-caret">▶</span>
-                <span class="tree-folder-lbl">📁 ${esc(f.name)}</span>
+                <span class="tree-folder-lbl" id="lbl_${f.id}">📁 ${esc(f.name)}</span>
                 <span class="tree-count">${folderCount}</span>
-                <button class="tree-del" onclick="event.stopPropagation();deleteNode(${f.id})" title="Supprimer groupe">×</button>
+                <button class="tree-edit" onclick="event.stopPropagation();startRename(${f.id})" title="Renommer">✏</button>
+                <button class="tree-del"  onclick="event.stopPropagation();deleteNode(${f.id})"  title="Supprimer groupe">×</button>
             </div>
             <div class="tree-children">
                 ${children.map(l => {
                 const count = words.filter(w=>w.listId===l.id).length;
-                return `<div class="tree-item${activeListId===l.id?' active':''}" onclick="setActiveList(${l.id});closeSidebar()">
+                return `<div class="tree-item${activeListId===l.id?' active':''}" id="ti_${l.id}" onclick="setActiveList(${l.id});closeSidebar()">
                         <span>📄</span>
-                        <span class="tree-item-lbl">${esc(l.name)}</span>
+                        <span class="tree-item-lbl" id="lbl_${l.id}">${esc(l.name)}</span>
                         <span class="tree-count">${count}</span>
-                        <button class="tree-del" onclick="event.stopPropagation();deleteNode(${l.id})" title="Supprimer">×</button>
+                        <button class="tree-edit" onclick="event.stopPropagation();startRename(${l.id})" title="Renommer">✏</button>
+                        <button class="tree-del"  onclick="event.stopPropagation();deleteNode(${l.id})"  title="Supprimer">×</button>
                     </div>`;
             }).join('')}
             </div>
@@ -306,16 +307,44 @@
 
         document.getElementById('sbTree').innerHTML = html;
 
-        // Refresh parent select in footer
         const sel = document.getElementById('sbParentSel');
         sel.innerHTML = '<option value="">Racine</option>' +
-                folders.map(f=>`<option value="${f.id}"${''/* keep current selection */}>${esc(f.name)}</option>`).join('');
+                folders.map(f=>`<option value="${f.id}">${esc(f.name)}</option>`).join('');
     }
 
     function toggleFolder(fId){
         const f = nodes.find(n=>n.id===fId);
         if(f) f._open = f._open === false;
         saveNodes(); renderTree();
+    }
+
+    function startRename(id){
+        const node = nodes.find(n=>n.id===id); if(!node) return;
+        const lbl  = document.getElementById('lbl_'+id); if(!lbl) return;
+        const isFolder = node.isFolder;
+        const prev = node.name;
+        // Replace label with inline input
+        lbl.outerHTML = `<input class="tree-rename-input" id="rin_${id}"
+        value="${esc(prev)}"
+        onkeydown="if(event.key==='Enter'){event.preventDefault();confirmRename(${id})}if(event.key==='Escape')renderTree()"
+        onblur="confirmRename(${id})">`;
+        const inp = document.getElementById('rin_'+id);
+        if(inp){ inp.focus(); inp.select(); }
+    }
+
+    function confirmRename(id){
+        const inp  = document.getElementById('rin_'+id); if(!inp) return;
+        const name = inp.value.trim();
+        if(name){
+            const node = nodes.find(n=>n.id===id);
+            if(node){
+                node.name = name;
+                saveNodes();
+                // Update breadcrumb if this is the active list
+                if(activeListId===id) document.getElementById('activeFilterName').textContent = name;
+            }
+        }
+        renderTree(); render();
     }
 
     function sbAddList(){
