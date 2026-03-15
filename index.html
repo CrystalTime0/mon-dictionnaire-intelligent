@@ -51,6 +51,21 @@
         .io-btn:hover{border-color:var(--accent);color:var(--accent)}
         .io-btn.imp:hover{border-color:var(--accent2);color:var(--accent2)}
 
+        /* ── Lists ── */
+        .filter-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+        .f-pill{padding:5px 12px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.04em;border:1px solid var(--border);border-radius:20px;background:transparent;color:var(--muted);cursor:pointer;transition:all .15s;white-space:nowrap}
+        .f-pill:hover{border-color:var(--accent);color:var(--accent)}
+        .f-pill.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+        .word-list-tag{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:4px;padding:1px 7px;margin-left:8px;vertical-align:middle}
+        .list-assign{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+        .list-assign-lbl{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;flex-basis:100%}
+        .l-tag{padding:4px 10px;font-family:'DM Mono',monospace;font-size:11px;border:1px solid var(--border);border-radius:20px;background:transparent;color:var(--muted);cursor:pointer;transition:all .15s}
+        .l-tag:hover{border-color:var(--accent);color:var(--accent)}
+        .l-tag.current{background:var(--accent);color:#fff;border-color:var(--accent)}
+        .l-tag.remove{color:var(--accent2);border-color:var(--accent2)}
+        .l-new-input{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:4px 10px;font-family:'DM Mono',monospace;font-size:11px;color:var(--text);outline:none;width:110px}
+        .l-new-input::placeholder{color:var(--muted)}
+
         /* ── Flashcard overlay wrapper (file 2) ── */
         .flashcard-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;padding:20px;z-index:100}
         .flashcard-box{background:var(--surface);border-radius:20px;padding:30px 24px;max-width:500px;width:100%;text-align:center;border:1px solid var(--border)}
@@ -110,6 +125,8 @@
     </div>
     <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(event)">
 
+    <div class="filter-bar" id="filterBar"></div>
+
     <div id="wordsList"></div>
 
 </div>
@@ -146,6 +163,48 @@
 
     let words = JSON.parse(localStorage.getItem('dico_data') || '[]');
     let openWord = null;
+    let activeFilter = null; // null = "Tout"
+
+    /* ------------------ LISTS ------------------ */
+
+    function getLists(){
+        return [...new Set(words.map(w=>w.list).filter(Boolean))].sort();
+    }
+
+    function renderFilterBar(){
+        const lists = getLists();
+        const bar = document.getElementById('filterBar');
+        if(!lists.length){ bar.innerHTML=''; return; }
+        bar.innerHTML =
+                `<button class="f-pill${activeFilter===null?' active':''}" onclick="setFilter(null)">Tout</button>` +
+                lists.map(l =>
+                        `<button class="f-pill${activeFilter===l?' active':''}" onclick="setFilter('${esc(l)}')">${esc(l)}</button>`
+                ).join('');
+    }
+
+    function setFilter(l){ activeFilter=l; fcIdx=0; fcFlipped=false; fcSeen=new Set(); render(); }
+
+    function assignList(id, listName){
+        const w = words.find(w=>w.id===id);
+        if(w){ w.list = listName || null; localStorage.setItem('dico_data',JSON.stringify(words)); render(); }
+    }
+
+    function renderListAssign(w){
+        const lists = getLists();
+        const existingPills = lists.map(l =>
+                `<button class="l-tag${w.list===l?' current':''}" onclick="assignList(${w.id},'${esc(l)}')">${esc(l)}</button>`
+        ).join('');
+        const removePill = w.list
+                ? `<button class="l-tag remove" onclick="assignList(${w.id},null)">✕ retirer</button>`
+                : '';
+        return `<div class="list-assign">
+            <span class="list-assign-lbl">Liste</span>
+            ${existingPills}
+            <input class="l-new-input" id="newListInput_${w.id}" placeholder="Nouvelle liste…"
+                onkeydown="if(event.key==='Enter'){const v=this.value.trim();if(v)assignList(${w.id},v);}">
+            ${removePill}
+        </div>`;
+    }
 
     /* ------------------ ADD WORD ------------------ */
 
@@ -210,14 +269,17 @@
 
     function render(){
 
+        renderFilterBar();
+
+        const filtered = activeFilter ? words.filter(w=>w.list===activeFilter) : words;
         const list=document.getElementById('wordsList');
 
-        list.innerHTML=words.map(w=>`
+        list.innerHTML=filtered.map(w=>`
 
 <div class="word-card">
 
 <div class="word-header" onclick="toggleWord(${w.id})">
-<span class="word-title">${w.term}</span>
+<span class="word-title">${w.term}${w.list?`<span class="word-list-tag">${esc(w.list)}</span>`:''}</span>
 <span>${openWord===w.id?'▲':'▼'}</span>
 </div>
 
@@ -228,6 +290,8 @@ ${openWord===w.id?`
 <span class="translation">${w.translation}</span>
 
 ${w.details?renderDetails(w.details):'<p>Aucun détail trouvé.</p>'}
+
+${renderListAssign(w)}
 
 <button class="btn-del" onclick="deleteWord(${w.id})">Supprimer</button>
 
@@ -333,7 +397,8 @@ ${d.example?`<span class="example">"${d.example}"</span>`:''}
     let fcIdx=0, fcFlipped=false, fcSeen=new Set();
 
     function openFlashcards(){
-        if(words.length===0){alert("Ajoute des mots d'abord");return;}
+        const pool = activeFilter ? words.filter(w=>w.list===activeFilter) : words;
+        if(pool.length===0){alert("Aucun mot dans cette sélection");return;}
         fcIdx=0; fcFlipped=false; fcSeen=new Set();
         renderCards();
         document.getElementById('flashOverlay').style.display='flex';
@@ -344,10 +409,11 @@ ${d.example?`<span class="example">"${d.example}"</span>`:''}
     }
 
     function renderCards(){
-        if(!words.length) return;
-        fcIdx=Math.min(fcIdx,words.length-1);
-        const c=words[fcIdx];
-        document.getElementById('fcProg').innerHTML=`<em>${fcIdx+1}</em> / ${words.length}${fcSeen.size>0?` · ${fcSeen.size} vu${fcSeen.size>1?'s':''}`:''}`;
+        const pool = activeFilter ? words.filter(w=>w.list===activeFilter) : words;
+        if(!pool.length) return;
+        fcIdx=Math.min(fcIdx,pool.length-1);
+        const c=pool[fcIdx];
+        document.getElementById('fcProg').innerHTML=`<em>${fcIdx+1}</em> / ${pool.length}${activeFilter?` · ${esc(activeFilter)}`:''}${fcSeen.size>0?` · ${fcSeen.size} vu${fcSeen.size>1?'s':''}`:''}`;
         document.getElementById('fcWord').textContent=c.term;
         document.getElementById('fcTrad').textContent=c.translation;
         const shortDef = c.details?.meanings?.[0]?.definitions?.[0]?.definition || '';
@@ -355,17 +421,22 @@ ${d.example?`<span class="example">"${d.example}"</span>`:''}
         document.getElementById('fcCard').classList.toggle('flipped',fcFlipped);
         document.getElementById('flipBtnEl').textContent=fcFlipped?'Masquer':'Révéler';
         document.getElementById('fcPrev').disabled=fcIdx===0;
-        document.getElementById('fcNext').disabled=fcIdx===words.length-1;
-        if(words.length<=40){
-            document.getElementById('fcDots').innerHTML=words.map((_,i)=>
+        document.getElementById('fcNext').disabled=fcIdx===pool.length-1;
+        if(pool.length<=40){
+            document.getElementById('fcDots').innerHTML=pool.map((_,i)=>
                     `<div class="dot${i===fcIdx?' cur':fcSeen.has(i)?' seen':''}" onclick="fcJump(${i})"></div>`
             ).join('');
         }
     }
 
     function flipCard(){ fcFlipped=!fcFlipped; fcSeen.add(fcIdx); renderCards(); }
-    function fcGo(d){ const n=fcIdx+d; if(n<0||n>=words.length)return; fcSeen.add(fcIdx); fcIdx=n; fcFlipped=false; renderCards(); }
+    function fcGo(d){
+        const pool = activeFilter ? words.filter(w=>w.list===activeFilter) : words;
+        const n=fcIdx+d; if(n<0||n>=pool.length)return; fcSeen.add(fcIdx); fcIdx=n; fcFlipped=false; renderCards();
+    }
     function fcJump(i){ fcSeen.add(fcIdx); fcIdx=i; fcFlipped=false; renderCards(); }
+
+    function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 
     render();
 
