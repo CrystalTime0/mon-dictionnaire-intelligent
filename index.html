@@ -2,103 +2,67 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Mon Dico & Listes</title>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;1,9..144,300;1,9..144,600&family=DM+Mono:wght@300;400;500&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mon Dico Pro</title>
 <style>
-    :root { --bg:#f7f4ef; --surface:#ffffff; --border:#ddd8ce; --text:#1a1712; --accent:#b8860b; --muted:#9b9184; }
-    body.dark { --bg:#0f0e0c; --surface:#1a1916; --border:#2e2b26; --text:#e8e0d0; --accent:#e8c57a; --muted:#6b6558; }
-    body { background: var(--bg); color: var(--text); font-family: 'Fraunces', serif; margin: 0; padding-bottom: 80px; }
-    .app { max-width: 560px; margin: 0 auto; padding: 20px; }
-    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-bottom: 10px; cursor: pointer; }
-    .nav { position: fixed; bottom: 0; width: 100%; display: flex; background: var(--surface); border-top: 1px solid var(--border); padding: 15px; justify-content: space-around; }
-    .tab-btn { background: none; border: none; color: var(--text); font-family: 'DM Mono', monospace; cursor: pointer; }
-    .tab-btn.active { color: var(--accent); font-weight: bold; }
-    input { padding: 10px; border: 1px solid var(--border); border-radius: 8px; width: 100%; margin-bottom: 10px; }
+    :root { --bg:#f7f4ef; --surface:#ffffff; --accent:#b8860b; --text:#1a1712; }
+    body.dark { --bg:#0f0e0c; --surface:#1a1916; --accent:#e8c57a; --text:#e8e0d0; }
+    body { background: var(--bg); color: var(--text); font-family: sans-serif; padding: 20px; }
+    .app { max-width: 600px; margin: 0 auto; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
+    input { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #ccc; }
+    .word-card { background: var(--surface); padding: 15px; border-radius: 12px; margin-bottom: 10px; border: 1px solid #ddd; }
+    .list-select { margin-top: 10px; font-size: 12px; }
 </style>
 </head>
 <body>
 
 <div class="app">
-    <div id="view-lists">
-        <h1>Mes Listes</h1>
-        <input type="text" id="newListName" placeholder="Nom de la nouvelle liste...">
-        <button onclick="createList()">Créer Liste</button>
-        <div id="listContainer" style="margin-top:20px;"></div>
+    <div class="header">
+        <h1>Mon Dico</h1>
+        <button onclick="window.location.href='flashcards.html'">Flashcards</button>
     </div>
 
-    <div id="view-cards" style="display:none;">
-        <h1>Révision : <span id="listTitle">Aucune</span></h1>
-        <div class="card" onclick="flipCard()" id="fc-scene">
-            <h2 id="fc-word">Sélectionnez une liste</h2>
-            <p id="fc-def">Cliquez sur une liste dans l'onglet Listes pour commencer.</p>
-        </div>
-        <button onclick="fcNext()">Suivant</button>
+    <div class="input-group">
+        <input type="text" id="wordInput" placeholder="Entrer un mot...">
+        <button onclick="addWord()">Ajouter</button>
     </div>
-</div>
 
-<div class="nav">
-    <button class="tab-btn active" id="btn-lists" onclick="switchTab('lists')">Listes</button>
-    <button class="tab-btn" id="btn-cards" onclick="switchTab('cards')">Révision</button>
-    <button class="tab-btn" onclick="toggleTheme()">☀️/🌙</button>
+    <div id="wordList"></div>
 </div>
 
 <script>
-    let data = JSON.parse(localStorage.getItem('my_dico_data') || '{"lists": []}');
-    let currentListIdx = 0;
-    let fcIdx = 0;
+    // Structure : { word, translation, list: "Général" }
+    let words = JSON.parse(localStorage.getItem('words') || '[]');
+    let lists = JSON.parse(localStorage.getItem('lists') || '["Général"]');
 
-    function createList() {
-        const name = document.getElementById('newListName').value;
-        if(!name) return;
-        data.lists.push({ name, words: [] });
-        save(); renderLists();
+    async function addWord() {
+        const input = document.getElementById('wordInput');
+        const term = input.value.trim();
+        if(!term) return;
+
+        // Ici, appel API comme avant...
+        const newWord = { id: Date.now(), term, translation: "...", list: "Général" };
+        words.unshift(newWord);
+        localStorage.setItem('words', JSON.stringify(words));
+        render();
     }
 
-    function save() { localStorage.setItem('my_dico_data', JSON.stringify(data)); }
-
-    function switchTab(tab) {
-        document.getElementById('view-lists').style.display = tab === 'lists' ? 'block' : 'none';
-        document.getElementById('view-cards').style.display = tab === 'cards' ? 'block' : 'none';
-        document.getElementById('btn-lists').classList.toggle('active', tab === 'lists');
-        document.getElementById('btn-cards').classList.toggle('active', tab === 'cards');
-    }
-
-    function renderLists() {
-        const container = document.getElementById('listContainer');
-        container.innerHTML = data.lists.map((l, i) => `
-            <div class="card" onclick="selectList(${i})">
-                <h3>${l.name}</h3>
-                <p>${l.words.length} mots</p>
+    function render() {
+        const container = document.getElementById('wordList');
+        container.innerHTML = words.map(w => `
+            <div class="word-card">
+                <h3>${w.term}</h3>
+                <p>${w.translation}</p>
+                <select class="list-select" onchange="moveWord(${w.id}, this.value)">
+                    ${lists.map(l => `<option value="${l}" ${w.list===l?'selected':''}>${l}</option>`).join('')}
+                </select>
             </div>
         `).join('');
     }
 
-    function selectList(i) {
-        currentListIdx = i;
-        fcIdx = 0;
-        document.getElementById('listTitle').textContent = data.lists[i].name;
-        switchTab('cards');
-        updateCard();
-    }
-
-    function updateCard() {
-        const list = data.lists[currentListIdx];
-        if(!list || list.words.length === 0) return;
-        const word = list.words[fcIdx];
-        document.getElementById('fc-word').textContent = word.term;
-        document.getElementById('fc-def').textContent = word.translation;
-    }
-
-    function fcNext() {
-        const list = data.lists[currentListIdx];
-        fcIdx = (fcIdx + 1) % list.words.length;
-        updateCard();
-    }
-
-    function toggleTheme() { document.body.classList.toggle('dark'); }
-    
-    renderLists();
+    render();
 </script>
 </body>
 </html>
