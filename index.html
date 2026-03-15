@@ -110,56 +110,60 @@
 
     async function handleAdd(){
 
-        const input=document.getElementById('wordInput');
-        const term=input.value.trim().toLowerCase();
+        const input = document.getElementById('wordInput');
+        const term = input.value.trim().toLowerCase();
 
-        if(!term||words.some(w=>w.term===term))return;
+        if(!term || words.some(w=>w.term===term)) return;
 
-        const btn=document.getElementById('addBtn');
+        const btn = document.getElementById('addBtn');
         btn.textContent="...";
 
         try{
 
-            /* NOUVELLE API TRADUCTION : LibreTranslate */
+            /* TRADUCTION GOOGLE */
 
-            const tradRes=await fetch("https://libretranslate.de/translate",{
-                method:"POST",
-                headers:{"Content-Type":"application/json"},
-                body:JSON.stringify({
-                    q:term,
-                    source:"en",
-                    target:"fr",
-                    format:"text"
-                })
-            });
+            const tradRes = await fetch(
+                    `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=fr&dt=t&q=${term}`
+            );
 
-            const tradData=await tradRes.json();
+            const tradData = await tradRes.json();
+            const translation = tradData[0][0][0];
 
-            const dictRes=await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${term}`);
-            const dictData=await dictRes.json();
+            /* DICTIONNAIRE */
 
-            const newEntry={
+            const dictRes = await fetch(
+                    `https://api.dictionaryapi.dev/api/v2/entries/en/${term}`
+            );
 
-                id:Date.now(),
-                term:term,
-                translation:tradData.translatedText || "?",
-                details:Array.isArray(dictData)?dictData[0]:null
+            const dictData = await dictRes.json();
+
+            const newEntry = {
+
+                id: Date.now(),
+                term: term,
+                translation: translation,
+                details: Array.isArray(dictData) ? dictData[0] : null
 
             };
 
             words.unshift(newEntry);
 
-            localStorage.setItem('dico_data',JSON.stringify(words));
+            localStorage.setItem('dico_data', JSON.stringify(words));
 
             input.value='';
-
             render();
 
-        }catch(e){alert("Erreur lors de la récupération")}
+        }catch(e){
+            console.error(e);
+            alert("Erreur lors de la récupération");
+        }
 
-        finally{btn.textContent="Ajouter"}
+        finally{
+            btn.textContent="Ajouter";
+        }
 
     }
+
 
     /* ------------------ RENDER ------------------ */
 
