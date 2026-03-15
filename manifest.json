@@ -1,7 +1,7 @@
 {
   "name": "Mon Dictionnaire Intelligent",
   "short_name": "Mon Dico",
-  "description": "Dictionnaire personnel anglais-français avec flashcards",
+  "description": "Dictionnaire personnel avec look Google Define",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0f0e0c",
