@@ -1,18 +1,15 @@
-const CACHE_NAME = 'dico-v3';
-const ASSETS = [
-  './index.html',
-  './manifest.json'
-];
+const CACHE_NAME = 'dico-google-v1';
 
-self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(ASSETS)));
-});
-
-self.addEventListener('fetch', e => {
-  if (e.request.url.includes('api.dictionaryapi.dev') || e.request.url.includes('mymemory')) {
-    return; // Ne pas mettre en cache les résultats d'API dynamiques pour éviter les bugs
+self.addEventListener('fetch', event => {
+  // On laisse passer les requêtes API sans les mettre en cache de force 
+  // pour toujours avoir les définitions les plus riches
+  if (event.request.url.includes('dictionaryapi') || event.request.url.includes('mymemory')) {
+    return;
   }
-  e.respondWith(
-    caches.match(e.request).then(res => res || fetch(e.request))
+  
+  event.respondWith(
+    caches.match(event.request).then(response => {
+      return response || fetch(event.request);
+    })
   );
 });
