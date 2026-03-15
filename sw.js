@@ -1,34 +1,18 @@
-const CACHE = 'mes-mots-v1';
+const CACHE_NAME = 'dico-v3';
 const ASSETS = [
   './index.html',
-  './manifest.json',
-  'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;1,9..144,300;1,9..144,600&family=DM+Mono:wght@300;400&display=swap'
+  './manifest.json'
 ];
 
 self.addEventListener('install', e => {
-  e.waitUntil(
-    caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting())
-  );
-});
-
-self.addEventListener('activate', e => {
-  e.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
-    ).then(() => self.clients.claim())
-  );
+  e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(ASSETS)));
 });
 
 self.addEventListener('fetch', e => {
-  // Pass through API calls
-  if (e.request.url.includes('anthropic.com')) return;
+  if (e.request.url.includes('api.dictionaryapi.dev') || e.request.url.includes('mymemory')) {
+    return; // Ne pas mettre en cache les résultats d'API dynamiques pour éviter les bugs
+  }
   e.respondWith(
-    caches.match(e.request).then(cached => cached || fetch(e.request).then(res => {
-      if (res && res.status === 200 && res.type !== 'opaque') {
-        const clone = res.clone();
-        caches.open(CACHE).then(c => c.put(e.request, clone));
-      }
-      return res;
-    }).catch(() => cached))
+    caches.match(e.request).then(res => res || fetch(e.request))
   );
 });
