@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -13,64 +12,103 @@
         :root{--bg:#f7f4ef;--surface:#ffffff;--border:#ddd8ce;--text:#1a1712;--muted:#9b9184;--accent:#b8860b;--accent2:#c0552a;--card:#f0ece4;--dim:#c8c2b8}
         body.dark{--bg:#0f0e0c;--surface:#1a1916;--border:#2e2b26;--text:#e8e0d0;--muted:#6b6558;--accent:#e8c57a;--accent2:#d4845a;--card:#222018;--dim:#3a3630}
         *{box-sizing:border-box;margin:0;padding:0}
-        body{background:var(--bg);color:var(--text);font-family:'Fraunces',serif;padding:20px;transition:.3s}
+        body{background:var(--bg);color:var(--text);font-family:'Fraunces',serif;padding:20px;transition:background .3s,color .3s}
         .container{max-width:600px;margin:0 auto}
 
+        /* ── Header ── */
         .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;gap:10px}
-        .header-actions{display:flex;gap:10px;align-items:center}
+        .header-actions{display:flex;gap:8px;align-items:center}
+        .header-btn{background:var(--surface);border:1px solid var(--border);padding:6px 10px;border-radius:8px;cursor:pointer;font-family:'DM Mono',monospace;font-size:11px;color:var(--text);transition:all .15s}
+        .header-btn:hover{border-color:var(--accent);color:var(--accent)}
 
+        /* ── Active filter breadcrumb ── */
+        .active-filter{display:none;align-items:center;gap:8px;margin-bottom:14px;padding:7px 12px;background:rgba(184,134,11,.07);border:1px solid rgba(184,134,11,.2);border-radius:8px;font-family:'DM Mono',monospace;font-size:11px;color:var(--muted)}
+        body.dark .active-filter{background:rgba(232,197,122,.06);border-color:rgba(232,197,122,.15)}
+        .active-filter.show{display:flex}
+        .active-filter-name{color:var(--accent);font-weight:500}
+        .active-filter-reset{background:none;border:none;cursor:pointer;color:var(--muted);font-size:11px;font-family:'DM Mono',monospace;margin-left:auto;padding:0}
+        .active-filter-reset:hover{color:var(--accent2)}
+
+        /* ── Search / toolbar ── */
         .search-box{display:flex;gap:8px;background:var(--surface);padding:10px;border-radius:12px;border:1px solid var(--border);margin-bottom:20px}
         .search-box input{flex:1;background:transparent;border:none;color:var(--text);font-size:18px;outline:none}
         .search-box button{background:var(--accent);border:none;padding:8px 15px;border-radius:8px;cursor:pointer;font-weight:bold;color:white}
-
-        .word-card{background:var(--surface);border:1px solid var(--border);border-radius:15px;margin-bottom:15px;overflow:hidden}
-        .word-header{padding:15px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
-        .word-title{font-size:22px;font-weight:600}
-        .word-content{padding:0 15px 15px;border-top:1px solid var(--border)}
-        .translation{font-size:24px;color:var(--accent);font-style:italic;margin:15px 0;display:block}
-
-        .pos-block{margin-bottom:20px}
-        .pos-title{font-family:'Lora',serif;font-style:italic;color:var(--accent2);font-weight:600;font-size:16px;margin-bottom:10px;display:block}
-
-        .definition-item{margin-bottom:15px;padding-left:5px}
-        .def-text{display:flex;gap:10px;font-size:15px;line-height:1.5}
-        .def-num{color:var(--muted);font-family:'DM Mono',monospace;font-size:13px;margin-top:2px}
-        .example{color:var(--muted);font-size:14px;margin:5px 0 5px 22px;display:block}
-
-        .synonym-container{margin:8px 0 0 22px}
-        .synonym-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
-        .synonym-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:5px}
-        .syn-tag{background:var(--bg);border:1px solid var(--border);padding:2px 10px;border-radius:20px;font-size:12px;color:var(--text)}
-
-        .btn-del{background:none;border:1px solid var(--border);color:var(--muted);padding:5px 10px;border-radius:5px;cursor:pointer;font-size:11px;margin-top:15px}
-
-        .header-btn{background:var(--surface);border:1px solid var(--border);padding:6px 10px;border-radius:8px;cursor:pointer}
-
         .toolbar{display:flex;gap:8px;margin-bottom:16px}
         .io-btn{padding:6px 12px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.04em;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--muted);cursor:pointer;transition:all .15s}
         .io-btn:hover{border-color:var(--accent);color:var(--accent)}
         .io-btn.imp:hover{border-color:var(--accent2);color:var(--accent2)}
 
-        /* ── Lists ── */
-        .filter-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
-        .f-pill{padding:5px 12px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.04em;border:1px solid var(--border);border-radius:20px;background:transparent;color:var(--muted);cursor:pointer;transition:all .15s;white-space:nowrap}
-        .f-pill:hover{border-color:var(--accent);color:var(--accent)}
-        .f-pill.active{background:var(--accent);color:#fff;border-color:var(--accent)}
-        .word-list-tag{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:4px;padding:1px 7px;margin-left:8px;vertical-align:middle}
-        .list-assign{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
-        .list-assign-lbl{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;flex-basis:100%}
-        .l-tag{padding:4px 10px;font-family:'DM Mono',monospace;font-size:11px;border:1px solid var(--border);border-radius:20px;background:transparent;color:var(--muted);cursor:pointer;transition:all .15s}
-        .l-tag:hover{border-color:var(--accent);color:var(--accent)}
-        .l-tag.current{background:var(--accent);color:#fff;border-color:var(--accent)}
-        .l-tag.remove{color:var(--accent2);border-color:var(--accent2)}
-        .l-new-input{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:4px 10px;font-family:'DM Mono',monospace;font-size:11px;color:var(--text);outline:none;width:110px}
-        .l-new-input::placeholder{color:var(--muted)}
+        /* ── Word cards ── */
+        .word-card{background:var(--surface);border:1px solid var(--border);border-radius:15px;margin-bottom:15px;overflow:hidden}
+        .word-header{padding:15px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+        .word-title{font-size:22px;font-weight:600;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+        .word-list-badge{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:4px;padding:1px 7px;font-weight:400}
+        .word-content{padding:0 15px 15px;border-top:1px solid var(--border)}
+        .translation{font-size:24px;color:var(--accent);font-style:italic;margin:15px 0;display:block}
+        .pos-block{margin-bottom:20px}
+        .pos-title{font-family:'Lora',serif;font-style:italic;color:var(--accent2);font-weight:600;font-size:16px;margin-bottom:10px;display:block}
+        .definition-item{margin-bottom:15px;padding-left:5px}
+        .def-text{display:flex;gap:10px;font-size:15px;line-height:1.5}
+        .def-num{color:var(--muted);font-family:'DM Mono',monospace;font-size:13px;margin-top:2px}
+        .example{color:var(--muted);font-size:14px;margin:5px 0 5px 22px;display:block}
+        .btn-del{background:none;border:1px solid var(--border);color:var(--muted);padding:5px 10px;border-radius:5px;cursor:pointer;font-size:11px;margin-top:15px}
 
-        /* ── Flashcard overlay wrapper (file 2) ── */
+        /* ── List assign row in word card ── */
+        .word-list-row{display:flex;align-items:center;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+        .word-list-row-lbl{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+        .word-list-select{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:5px 8px;font-family:'DM Mono',monospace;font-size:11px;color:var(--text);cursor:pointer;outline:none;flex:1}
+        .word-list-select option{background:var(--surface)}
+
+        /* ── Sidebar ── */
+        .sb-overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:200;opacity:0;pointer-events:none;transition:opacity .25s}
+        .sb-overlay.open{opacity:1;pointer-events:auto}
+        .sidebar{position:fixed;top:0;left:0;bottom:0;width:270px;background:var(--surface);border-right:1px solid var(--border);z-index:201;transform:translateX(-100%);transition:transform .28s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;overflow:hidden}
+        .sidebar.open{transform:translateX(0)}
+        .sb-head{padding:18px 16px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+        .sb-title{font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+        .sb-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);line-height:1;padding:2px 4px}
+        .sb-close:hover{color:var(--text)}
+        .sb-tree{flex:1;overflow-y:auto;padding:8px 0}
+
+        /* Tree rows */
+        .tree-all{display:flex;align-items:center;gap:8px;padding:9px 16px;cursor:pointer;font-family:'DM Mono',monospace;font-size:12px;color:var(--muted);transition:background .12s}
+        .tree-all:hover{background:var(--card);color:var(--text)}
+        .tree-all.active{color:var(--accent);background:var(--card)}
+        .tree-divider{height:1px;background:var(--border);margin:6px 0}
+
+        .tree-folder{margin-bottom:1px}
+        .tree-folder-head{display:flex;align-items:center;gap:6px;padding:8px 16px;cursor:pointer;font-family:'DM Mono',monospace;font-size:12px;color:var(--text);transition:background .12s;user-select:none}
+        .tree-folder-head:hover{background:var(--card)}
+        .tree-caret{font-size:9px;transition:transform .18s;flex-shrink:0;color:var(--muted)}
+        .tree-folder.open .tree-caret{transform:rotate(90deg)}
+        .tree-folder-lbl{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+        .tree-count{font-size:10px;color:var(--muted);margin-left:auto;flex-shrink:0}
+        .tree-del{opacity:0;background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:0 3px;line-height:1;flex-shrink:0;transition:opacity .15s}
+        .tree-folder-head:hover .tree-del,
+        .tree-item:hover .tree-del{opacity:1}
+        .tree-del:hover{color:var(--accent2)}
+        .tree-children{padding-left:0;display:none;border-left:2px solid var(--border);margin-left:24px}
+        .tree-folder.open .tree-children{display:block}
+
+        .tree-item{display:flex;align-items:center;gap:6px;padding:7px 16px;cursor:pointer;font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);transition:background .12s}
+        .tree-item:hover{background:var(--card);color:var(--text)}
+        .tree-item.active{color:var(--accent);background:rgba(184,134,11,.06)}
+        body.dark .tree-item.active{background:rgba(232,197,122,.06)}
+        .tree-item-lbl{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+        /* Sidebar footer */
+        .sb-footer{padding:12px 14px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:8px;flex-shrink:0}
+        .sb-add-row{display:flex;gap:6px;align-items:center}
+        .sb-input{flex:1;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:6px 9px;font-family:'DM Mono',monospace;font-size:11px;color:var(--text);outline:none;min-width:0}
+        .sb-input::placeholder{color:var(--muted)}
+        .sb-add-btn{padding:6px 10px;font-family:'DM Mono',monospace;font-size:11px;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--muted);cursor:pointer;white-space:nowrap;transition:all .15s;flex-shrink:0}
+        .sb-add-btn:hover{border-color:var(--accent);color:var(--accent)}
+        .sb-parent-select{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:5px 6px;font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);outline:none;cursor:pointer;max-width:90px}
+        .sb-parent-select option{background:var(--surface)}
+
+        /* ── Flashcard overlay ── */
         .flashcard-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;padding:20px;z-index:100}
         .flashcard-box{background:var(--surface);border-radius:20px;padding:30px 24px;max-width:500px;width:100%;text-align:center;border:1px solid var(--border)}
-
-        /* ── Flashcards (from file 1) ── */
         .fc-wrap{display:flex;flex-direction:column;align-items:center;padding-top:4px}
         .fc-prog{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);margin-bottom:20px;letter-spacing:.1em}
         .fc-prog em{color:var(--text);font-style:normal}
@@ -97,21 +135,50 @@
         .fc-close{margin-top:20px;background:none;border:1px solid var(--border);color:var(--muted);padding:6px 16px;border-radius:8px;cursor:pointer;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.06em}
         .fc-close:hover{border-color:var(--accent2);color:var(--accent2)}
     </style>
-
 </head>
-
 <body>
+
+<!-- Sidebar overlay + panel -->
+<div class="sb-overlay" id="sbOverlay" onclick="closeSidebar()"></div>
+<div class="sidebar" id="sidebar">
+    <div class="sb-head">
+        <span class="sb-title">Mes listes</span>
+        <button class="sb-close" onclick="closeSidebar()">×</button>
+    </div>
+    <div class="sb-tree" id="sbTree"></div>
+    <div class="sb-footer">
+        <!-- Add list -->
+        <div class="sb-add-row">
+            <input class="sb-input" id="sbNewName" placeholder="Nouvelle liste…" onkeydown="if(event.key==='Enter')sbAddList()">
+            <select class="sb-parent-select" id="sbParentSel" title="Dans quel groupe ?">
+                <option value="">Racine</option>
+            </select>
+            <button class="sb-add-btn" onclick="sbAddList()">+ Liste</button>
+        </div>
+        <!-- Add group/folder -->
+        <div class="sb-add-row">
+            <input class="sb-input" id="sbFolderName" placeholder="Nouveau groupe…" onkeydown="if(event.key==='Enter')sbAddFolder()">
+            <button class="sb-add-btn" onclick="sbAddFolder()">+ Groupe</button>
+        </div>
+    </div>
+</div>
 
 <div class="container">
 
     <div class="header">
         <h1>Mon <em>Dico</em></h1>
-
         <div class="header-actions">
+            <button class="header-btn" onclick="openSidebar()">☰ Listes</button>
             <button class="header-btn" onclick="openFlashcards()">Flashcards</button>
             <button onclick="toggleTheme()" id="themeBtn" style="background:none;border:none;font-size:20px;cursor:pointer">🌙</button>
         </div>
+    </div>
 
+    <!-- Active filter breadcrumb -->
+    <div class="active-filter" id="activeFilterBar">
+        <span>📂</span>
+        <span class="active-filter-name" id="activeFilterName"></span>
+        <button class="active-filter-reset" onclick="setActiveList(null)">× Tout afficher</button>
     </div>
 
     <div class="search-box">
@@ -125,13 +192,10 @@
     </div>
     <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(event)">
 
-    <div class="filter-bar" id="filterBar"></div>
-
     <div id="wordsList"></div>
-
 </div>
 
-<!-- Flashcards (elaborate system from file 1) -->
+<!-- Flashcards -->
 <div class="flashcard-overlay" id="flashOverlay">
     <div class="flashcard-box">
         <div class="fc-wrap">
@@ -160,270 +224,353 @@
 </div>
 
 <script>
+    /* ═══════════════════════════════════════
+       DATA
+    ═══════════════════════════════════════ */
+    let words = JSON.parse(localStorage.getItem('dico_data')  || '[]');
+    // nodes: [{id, name, isFolder, parentId, _open?}]
+    let nodes = JSON.parse(localStorage.getItem('dico_nodes') || '[]');
 
-    let words = JSON.parse(localStorage.getItem('dico_data') || '[]');
-    let openWord = null;
-    let activeFilter = null; // null = "Tout"
+    let openWord     = null;
+    let activeListId = null;  // null = all
 
-    /* ------------------ LISTS ------------------ */
+    function saveWords(){ localStorage.setItem('dico_data',  JSON.stringify(words)); }
+    function saveNodes(){ localStorage.setItem('dico_nodes', JSON.stringify(nodes)); }
+    function uid(){ return Date.now() + Math.floor(Math.random()*9999); }
+    function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 
-    function getLists(){
-        return [...new Set(words.map(w=>w.list).filter(Boolean))].sort();
+    /* ═══════════════════════════════════════
+       SIDEBAR
+    ═══════════════════════════════════════ */
+    function openSidebar(){
+        renderTree();
+        document.getElementById('sidebar').classList.add('open');
+        document.getElementById('sbOverlay').classList.add('open');
+    }
+    function closeSidebar(){
+        document.getElementById('sidebar').classList.remove('open');
+        document.getElementById('sbOverlay').classList.remove('open');
     }
 
-    function renderFilterBar(){
-        const lists = getLists();
-        const bar = document.getElementById('filterBar');
-        if(!lists.length){ bar.innerHTML=''; return; }
-        bar.innerHTML =
-                `<button class="f-pill${activeFilter===null?' active':''}" onclick="setFilter(null)">Tout</button>` +
-                lists.map(l =>
-                        `<button class="f-pill${activeFilter===l?' active':''}" onclick="setFilter('${esc(l)}')">${esc(l)}</button>`
-                ).join('');
-    }
+    function renderTree(){
+        const folders   = nodes.filter(n => n.isFolder);
+        const rootLists = nodes.filter(n => !n.isFolder && !n.parentId);
 
-    function setFilter(l){ activeFilter=l; fcIdx=0; fcFlipped=false; fcSeen=new Set(); render(); }
+        let html = '';
 
-    function assignList(id, listName){
-        const w = words.find(w=>w.id===id);
-        if(w){ w.list = listName || null; localStorage.setItem('dico_data',JSON.stringify(words)); render(); }
-    }
+        // "Tout" row
+        const totalCount = words.length;
+        html += `<div class="tree-all${activeListId===null?' active':''}" onclick="setActiveList(null);closeSidebar()">
+        📋 Tout
+        <span class="tree-count" style="margin-left:auto">${totalCount}</span>
+    </div>`;
 
-    function renderListAssign(w){
-        const lists = getLists();
-        const existingPills = lists.map(l =>
-                `<button class="l-tag${w.list===l?' current':''}" onclick="assignList(${w.id},'${esc(l)}')">${esc(l)}</button>`
-        ).join('');
-        const removePill = w.list
-                ? `<button class="l-tag remove" onclick="assignList(${w.id},null)">✕ retirer</button>`
-                : '';
-        return `<div class="list-assign">
-            <span class="list-assign-lbl">Liste</span>
-            ${existingPills}
-            <input class="l-new-input" id="newListInput_${w.id}" placeholder="Nouvelle liste…"
-                onkeydown="if(event.key==='Enter'){const v=this.value.trim();if(v)assignList(${w.id},v);}">
-            ${removePill}
+        if(rootLists.length || folders.length) html += '<div class="tree-divider"></div>';
+
+        // Root-level lists (no parent folder)
+        rootLists.forEach(l => {
+            const count = words.filter(w=>w.listId===l.id).length;
+            html += `<div class="tree-item${activeListId===l.id?' active':''}" onclick="setActiveList(${l.id});closeSidebar()">
+            <span>📄</span>
+            <span class="tree-item-lbl">${esc(l.name)}</span>
+            <span class="tree-count">${count}</span>
+            <button class="tree-del" onclick="event.stopPropagation();deleteNode(${l.id})" title="Supprimer">×</button>
         </div>`;
+        });
+
+        // Folders with their children
+        folders.forEach(f => {
+            const children = nodes.filter(n => !n.isFolder && n.parentId === f.id);
+            const folderCount = words.filter(w => children.some(c=>c.id===w.listId)).length;
+            const isOpen = f._open !== false;
+            html += `<div class="tree-folder${isOpen?' open':''}" id="tf_${f.id}">
+            <div class="tree-folder-head" onclick="toggleFolder(${f.id})">
+                <span class="tree-caret">▶</span>
+                <span class="tree-folder-lbl">📁 ${esc(f.name)}</span>
+                <span class="tree-count">${folderCount}</span>
+                <button class="tree-del" onclick="event.stopPropagation();deleteNode(${f.id})" title="Supprimer groupe">×</button>
+            </div>
+            <div class="tree-children">
+                ${children.map(l => {
+                const count = words.filter(w=>w.listId===l.id).length;
+                return `<div class="tree-item${activeListId===l.id?' active':''}" onclick="setActiveList(${l.id});closeSidebar()">
+                        <span>📄</span>
+                        <span class="tree-item-lbl">${esc(l.name)}</span>
+                        <span class="tree-count">${count}</span>
+                        <button class="tree-del" onclick="event.stopPropagation();deleteNode(${l.id})" title="Supprimer">×</button>
+                    </div>`;
+            }).join('')}
+            </div>
+        </div>`;
+        });
+
+        document.getElementById('sbTree').innerHTML = html;
+
+        // Refresh parent select in footer
+        const sel = document.getElementById('sbParentSel');
+        sel.innerHTML = '<option value="">Racine</option>' +
+                folders.map(f=>`<option value="${f.id}"${''/* keep current selection */}>${esc(f.name)}</option>`).join('');
     }
 
-    /* ------------------ ADD WORD ------------------ */
+    function toggleFolder(fId){
+        const f = nodes.find(n=>n.id===fId);
+        if(f) f._open = f._open === false;
+        saveNodes(); renderTree();
+    }
 
+    function sbAddList(){
+        const name = document.getElementById('sbNewName').value.trim(); if(!name) return;
+        const pv   = document.getElementById('sbParentSel').value;
+        const parentId = pv ? parseInt(pv) : null;
+        nodes.push({ id: uid(), name, isFolder: false, parentId });
+        saveNodes();
+        document.getElementById('sbNewName').value = '';
+        renderTree();
+    }
+
+    function sbAddFolder(){
+        const name = document.getElementById('sbFolderName').value.trim(); if(!name) return;
+        nodes.push({ id: uid(), name, isFolder: true, parentId: null, _open: true });
+        saveNodes();
+        document.getElementById('sbFolderName').value = '';
+        renderTree();
+    }
+
+    function deleteNode(id){
+        const node = nodes.find(n=>n.id===id); if(!node) return;
+        if(node.isFolder){
+            const childIds = nodes.filter(n=>n.parentId===id).map(n=>n.id);
+            words.forEach(w=>{ if(childIds.includes(w.listId)) w.listId=null; });
+            nodes = nodes.filter(n=>n.id!==id && n.parentId!==id);
+        } else {
+            words.forEach(w=>{ if(w.listId===id) w.listId=null; });
+            nodes = nodes.filter(n=>n.id!==id);
+        }
+        if(activeListId===id) setActiveList(null);
+        saveNodes(); saveWords();
+        renderTree(); render();
+    }
+
+    function setActiveList(id){
+        activeListId = id;
+        fcIdx=0; fcFlipped=false; fcSeen=new Set();
+        // Breadcrumb
+        const bar  = document.getElementById('activeFilterBar');
+        const name = document.getElementById('activeFilterName');
+        if(id===null){ bar.classList.remove('show'); }
+        else {
+            const node = nodes.find(n=>n.id===id);
+            name.textContent = node ? node.name : '';
+            bar.classList.add('show');
+        }
+        render();
+    }
+
+    function getPool(){
+        return activeListId !== null ? words.filter(w=>w.listId===activeListId) : words;
+    }
+
+    /* ═══════════════════════════════════════
+       ADD WORD
+    ═══════════════════════════════════════ */
     async function handleAdd(){
-
         const input = document.getElementById('wordInput');
-        const term = input.value.trim().toLowerCase();
-
+        const term  = input.value.trim().toLowerCase();
         if(!term || words.some(w=>w.term===term)) return;
 
         const btn = document.getElementById('addBtn');
-        btn.textContent="...";
+        btn.textContent = '...';
 
         try{
-
-            /* TRADUCTION GOOGLE */
-
             const tradRes = await fetch(
-                    `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=fr&dt=t&q=${term}`
+                    `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=fr&dt=t&q=${encodeURIComponent(term)}`
             );
-
-            const tradData = await tradRes.json();
+            const tradData  = await tradRes.json();
             const translation = tradData[0][0][0];
 
-            /* DICTIONNAIRE */
-
-            const dictRes = await fetch(
-                    `https://api.dictionaryapi.dev/api/v2/entries/en/${term}`
-            );
-
+            const dictRes  = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${term}`);
             const dictData = await dictRes.json();
 
-            const newEntry = {
-
-                id: Date.now(),
-                term: term,
-                translation: translation,
-                details: Array.isArray(dictData) ? dictData[0] : null
-
-            };
-
-            words.unshift(newEntry);
-
-            localStorage.setItem('dico_data', JSON.stringify(words));
-
-            input.value='';
-            render();
-
+            words.unshift({
+                id: uid(), term, translation,
+                details: Array.isArray(dictData) ? dictData[0] : null,
+                listId: activeListId   // auto-assign to current list if any
+            });
+            saveWords(); input.value=''; render();
         }catch(e){
             console.error(e);
-            alert("Erreur lors de la récupération");
+            alert('Erreur lors de la récupération');
+        }finally{
+            btn.textContent = 'Ajouter';
         }
-
-        finally{
-            btn.textContent="Ajouter";
-        }
-
     }
 
-
-    /* ------------------ RENDER ------------------ */
-
+    /* ═══════════════════════════════════════
+       RENDER
+    ═══════════════════════════════════════ */
     function render(){
+        const pool = getPool();
+        const listOpts = nodes.filter(n=>!n.isFolder)
+                .map(n=>`<option value="${n.id}">${esc(n.name)}</option>`).join('');
 
-        renderFilterBar();
-
-        const filtered = activeFilter ? words.filter(w=>w.list===activeFilter) : words;
-        const list=document.getElementById('wordsList');
-
-        list.innerHTML=filtered.map(w=>`
-
-<div class="word-card">
-
+        document.getElementById('wordsList').innerHTML = pool.map(w => {
+            const listNode = w.listId ? nodes.find(n=>n.id===w.listId) : null;
+            const badge    = listNode ? `<span class="word-list-badge">${esc(listNode.name)}</span>` : '';
+            return `<div class="word-card">
 <div class="word-header" onclick="toggleWord(${w.id})">
-<span class="word-title">${w.term}${w.list?`<span class="word-list-tag">${esc(w.list)}</span>`:''}</span>
-<span>${openWord===w.id?'▲':'▼'}</span>
+  <span class="word-title">${esc(w.term)}${badge}</span>
+  <span>${openWord===w.id?'▲':'▼'}</span>
 </div>
+${openWord===w.id ? `<div class="word-content">
+  <span class="translation">${esc(w.translation)}</span>
+  ${w.details ? renderDetails(w.details) : '<p>Aucun détail trouvé.</p>'}
+  <div class="word-list-row">
+    <span class="word-list-row-lbl">Liste</span>
+    <select class="word-list-select" id="wls_${w.id}" onchange="assignList(${w.id},this.value)">
+      <option value="">— aucune —</option>${listOpts}
+    </select>
+  </div>
+  <button class="btn-del" onclick="deleteWord(${w.id})">Supprimer</button>
+</div>` : ''}
+</div>`;
+        }).join('');
 
-${openWord===w.id?`
-
-<div class="word-content">
-
-<span class="translation">${w.translation}</span>
-
-${w.details?renderDetails(w.details):'<p>Aucun détail trouvé.</p>'}
-
-${renderListAssign(w)}
-
-<button class="btn-del" onclick="deleteWord(${w.id})">Supprimer</button>
-
-</div>
-
-`:''}
-
-</div>
-
-`).join('');
-
+        // Set select current value
+        pool.forEach(w => {
+            if(openWord===w.id){
+                const sel = document.getElementById(`wls_${w.id}`);
+                if(sel && w.listId) sel.value = w.listId;
+            }
+        });
     }
 
     function renderDetails(data){
-
         return data.meanings.map(m=>`
-
 <div class="pos-block">
-
-<span class="pos-title">${m.partOfSpeech}</span>
-
+<span class="pos-title">${esc(m.partOfSpeech)}</span>
 ${m.definitions.slice(0,3).map((d,i)=>`
-
 <div class="definition-item">
-
-<div class="def-text">
-<span class="def-num">${i+1}.</span>
-<span>${d.definition}</span>
-</div>
-
-${d.example?`<span class="example">"${d.example}"</span>`:''}
-
-</div>
-
-`).join('')}
-
-</div>
-
-`).join('');
-
+<div class="def-text"><span class="def-num">${i+1}.</span><span>${esc(d.definition)}</span></div>
+${d.example?`<span class="example">"${esc(d.example)}"</span>`:''}
+</div>`).join('')}
+</div>`).join('');
     }
 
-    /* ------------------ WORD ACTIONS ------------------ */
+    function toggleWord(id){ openWord = openWord===id ? null : id; render(); }
 
-    function toggleWord(id){openWord=openWord===id?null:id;render();}
+    function assignList(wordId, val){
+        const w = words.find(x=>x.id===wordId); if(!w) return;
+        w.listId = val ? parseInt(val) : null;
+        saveWords(); render();
+        if(document.getElementById('sidebar').classList.contains('open')) renderTree();
+    }
 
     function deleteWord(id){
-
-        words=words.filter(w=>w.id!==id);
-
-        localStorage.setItem('dico_data',JSON.stringify(words));
-
-        render();
-
+        words = words.filter(w=>w.id!==id);
+        saveWords(); render();
     }
 
-    /* ------------------ THEME ------------------ */
-
+    /* ═══════════════════════════════════════
+       THEME
+    ═══════════════════════════════════════ */
     function toggleTheme(){
-
-        const isDark=document.body.classList.toggle('dark');
-
-        document.getElementById('themeBtn').textContent=isDark?'☀️':'🌙';
-
-        document.getElementById('themeColor').content=isDark?'#0f0e0c':'#f7f4ef';
-
+        const isDark = document.body.classList.toggle('dark');
+        document.getElementById('themeBtn').textContent = isDark ? '☀️' : '🌙';
+        document.getElementById('themeColor').content   = isDark ? '#0f0e0c' : '#f7f4ef';
     }
 
-    /* ------------------ EXPORT / IMPORT ------------------ */
-
+    /* ═══════════════════════════════════════
+       EXPORT / IMPORT
+    ═══════════════════════════════════════ */
     function exportJSON(){
-        const blob = new Blob([JSON.stringify(words, null, 2)], {type:'application/json'});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `mon-dico-${new Date().toISOString().slice(0,10)}.json`;
-        a.click();
-        URL.revokeObjectURL(url);
+        const payload = { version: 2, words, nodes };
+        const blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'});
+        const url  = URL.createObjectURL(blob);
+        const a    = document.createElement('a');
+        a.href = url; a.download = `mon-dico-${new Date().toISOString().slice(0,10)}.json`;
+        a.click(); URL.revokeObjectURL(url);
     }
-
     function importJSON(e){
-        const file = e.target.files?.[0];
-        if(!file) return;
+        const file = e.target.files?.[0]; if(!file) return;
         const reader = new FileReader();
-        reader.onload = (ev) => {
+        reader.onload = ev => {
             try{
                 const parsed = JSON.parse(ev.target.result);
-                if(!Array.isArray(parsed)) throw new Error();
-                const existing = new Set(words.map(w=>w.term.toLowerCase()));
-                const newOnes = parsed.filter(w=>w.term && !existing.has(w.term.toLowerCase()));
-                words = [...newOnes, ...words];
-                localStorage.setItem('dico_data', JSON.stringify(words));
-                render();
-                alert(`${newOnes.length} mot${newOnes.length!==1?'s':''} importé${newOnes.length!==1?'s':''} ✓`);
-            }catch{ alert('Fichier invalide ✗'); }
+
+                // Support ancien format (tableau de mots) et nouveau format (objet v2)
+                let inWords, inNodes;
+                if(Array.isArray(parsed)){
+                    inWords = parsed; inNodes = [];
+                } else if(parsed.version===2 && Array.isArray(parsed.words)){
+                    inWords = parsed.words; inNodes = parsed.nodes || [];
+                } else { throw new Error(); }
+
+                // Merge mots (pas de doublon)
+                const exWords = new Set(words.map(w=>w.term.toLowerCase()));
+                const newWords = inWords.filter(w=>w.term && !exWords.has(w.term.toLowerCase()));
+
+                // Merge nodes : on réassigne des nouveaux IDs aux noeuds importés
+                // pour éviter les collisions, et on remet à jour les listId des mots importés
+                const idMap = {};  // oldId -> newId
+                const newNodes = inNodes.map(n => {
+                    const newId = uid();
+                    idMap[n.id] = newId;
+                    return { ...n, id: newId, parentId: n.parentId ?? null };
+                });
+                // Fix parentId references
+                newNodes.forEach(n => {
+                    if(n.parentId && idMap[n.parentId]) n.parentId = idMap[n.parentId];
+                });
+                // Fix listId references in imported words
+                newWords.forEach(w => {
+                    if(w.listId && idMap[w.listId]) w.listId = idMap[w.listId];
+                    else if(w.listId && !idMap[w.listId]) w.listId = null; // liste inconnue
+                });
+
+                // Fusionner les noeuds en évitant les doublons de nom au même niveau
+                const exNodeKeys = new Set(nodes.map(n=>`${n.parentId||''}|${n.name.toLowerCase()}`));
+                const filteredNodes = newNodes.filter(n => !exNodeKeys.has(`${n.parentId||''}|${n.name.toLowerCase()}`));
+
+                words = [...newWords, ...words];
+                nodes = [...nodes, ...filteredNodes];
+                saveWords(); saveNodes(); render();
+                alert(`${newWords.length} mot${newWords.length!==1?'s':''} et ${filteredNodes.length} liste${filteredNodes.length!==1?'s':''} importé${newWords.length!==1?'s':''} ✓`);
+            }catch(err){ console.error(err); alert('Fichier invalide ✗'); }
         };
-        reader.readAsText(file);
-        e.target.value='';
+        reader.readAsText(file); e.target.value='';
     }
 
-    /* ------------------ FLASHCARDS (from file 1) ------------------ */
-
+    /* ═══════════════════════════════════════
+       FLASHCARDS
+    ═══════════════════════════════════════ */
     let fcIdx=0, fcFlipped=false, fcSeen=new Set();
 
     function openFlashcards(){
-        const pool = activeFilter ? words.filter(w=>w.list===activeFilter) : words;
-        if(pool.length===0){alert("Aucun mot dans cette sélection");return;}
+        const pool = getPool();
+        if(!pool.length){ alert('Aucun mot dans cette sélection'); return; }
         fcIdx=0; fcFlipped=false; fcSeen=new Set();
         renderCards();
         document.getElementById('flashOverlay').style.display='flex';
     }
-
-    function closeFlash(){
-        document.getElementById('flashOverlay').style.display='none';
-    }
+    function closeFlash(){ document.getElementById('flashOverlay').style.display='none'; }
 
     function renderCards(){
-        const pool = activeFilter ? words.filter(w=>w.list===activeFilter) : words;
-        if(!pool.length) return;
-        fcIdx=Math.min(fcIdx,pool.length-1);
-        const c=pool[fcIdx];
-        document.getElementById('fcProg').innerHTML=`<em>${fcIdx+1}</em> / ${pool.length}${activeFilter?` · ${esc(activeFilter)}`:''}${fcSeen.size>0?` · ${fcSeen.size} vu${fcSeen.size>1?'s':''}`:''}`;
-        document.getElementById('fcWord').textContent=c.term;
-        document.getElementById('fcTrad').textContent=c.translation;
+        const pool = getPool(); if(!pool.length) return;
+        fcIdx = Math.min(fcIdx, pool.length-1);
+        const c = pool[fcIdx];
+        const listLabel = activeListId ? (nodes.find(n=>n.id===activeListId)?.name||'') : '';
+        document.getElementById('fcProg').innerHTML =
+                `<em>${fcIdx+1}</em> / ${pool.length}${listLabel?` · ${esc(listLabel)}`:''}${fcSeen.size>0?` · ${fcSeen.size} vu${fcSeen.size>1?'s':''}` : ''}`;
+        document.getElementById('fcWord').textContent = c.term;
+        document.getElementById('fcTrad').textContent = c.translation;
         const shortDef = c.details?.meanings?.[0]?.definitions?.[0]?.definition || '';
-        document.getElementById('fcDef').textContent = shortDef ? shortDef.slice(0,80)+(shortDef.length>80?'…':'') : '';
-        document.getElementById('fcCard').classList.toggle('flipped',fcFlipped);
-        document.getElementById('flipBtnEl').textContent=fcFlipped?'Masquer':'Révéler';
-        document.getElementById('fcPrev').disabled=fcIdx===0;
-        document.getElementById('fcNext').disabled=fcIdx===pool.length-1;
+        document.getElementById('fcDef').textContent  = shortDef ? shortDef.slice(0,80)+(shortDef.length>80?'…':'') : '';
+        document.getElementById('fcCard').classList.toggle('flipped', fcFlipped);
+        document.getElementById('flipBtnEl').textContent = fcFlipped ? 'Masquer' : 'Révéler';
+        document.getElementById('fcPrev').disabled = fcIdx===0;
+        document.getElementById('fcNext').disabled = fcIdx===pool.length-1;
         if(pool.length<=40){
-            document.getElementById('fcDots').innerHTML=pool.map((_,i)=>
+            document.getElementById('fcDots').innerHTML = pool.map((_,i)=>
                     `<div class="dot${i===fcIdx?' cur':fcSeen.has(i)?' seen':''}" onclick="fcJump(${i})"></div>`
             ).join('');
         }
@@ -431,16 +578,14 @@ ${d.example?`<span class="example">"${d.example}"</span>`:''}
 
     function flipCard(){ fcFlipped=!fcFlipped; fcSeen.add(fcIdx); renderCards(); }
     function fcGo(d){
-        const pool = activeFilter ? words.filter(w=>w.list===activeFilter) : words;
-        const n=fcIdx+d; if(n<0||n>=pool.length)return; fcSeen.add(fcIdx); fcIdx=n; fcFlipped=false; renderCards();
+        const pool=getPool(); const n=fcIdx+d;
+        if(n<0||n>=pool.length) return;
+        fcSeen.add(fcIdx); fcIdx=n; fcFlipped=false; renderCards();
     }
     function fcJump(i){ fcSeen.add(fcIdx); fcIdx=i; fcFlipped=false; renderCards(); }
 
-    function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
-
+    /* ─── Init ─── */
     render();
-
 </script>
-
 </body>
 </html>
