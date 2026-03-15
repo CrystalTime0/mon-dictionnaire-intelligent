@@ -38,6 +38,45 @@
         .io-btn:hover{border-color:var(--accent);color:var(--accent)}
         .io-btn.imp:hover{border-color:var(--accent2);color:var(--accent2)}
 
+        /* ── Search + sort bar ── */
+        .filter-row{display:flex;gap:8px;margin-bottom:16px;align-items:center}
+        .filter-search{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:6px 11px;font-family:'DM Mono',monospace;font-size:12px;color:var(--text);outline:none;min-width:0}
+        .filter-search::placeholder{color:var(--muted)}
+        .sort-btn{padding:6px 10px;font-family:'DM Mono',monospace;font-size:11px;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--muted);cursor:pointer;transition:all .15s;white-space:nowrap}
+        .sort-btn.on{background:var(--card);color:var(--text);border-color:var(--dim)}
+        .sort-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+        /* ── Audio button ── */
+        .btn-audio{background:none;border:none;cursor:pointer;font-size:16px;padding:0 4px;opacity:.5;transition:opacity .15s;vertical-align:middle}
+        .btn-audio:hover{opacity:1}
+        .btn-audio.speaking{opacity:1;animation:pulse .6s ease infinite alternate}
+        @keyframes pulse{from{transform:scale(1)}to{transform:scale(1.25)}}
+
+        /* ── Stats overlay ── */
+        .stats-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;display:none;align-items:flex-end;justify-content:center;padding:0}
+        .stats-overlay.open{display:flex}
+        .stats-panel{background:var(--surface);border-radius:20px 20px 0 0;border:1px solid var(--border);border-bottom:none;width:100%;max-width:600px;max-height:85vh;overflow-y:auto;padding:24px 20px 32px}
+        .stats-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+        .stats-title{font-family:'DM Mono',monospace;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+        .stats-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted)}
+        .stats-close:hover{color:var(--text)}
+        .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+        .stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px}
+        .stat-val{font-family:'Fraunces',serif;font-size:32px;font-weight:600;color:var(--accent);line-height:1}
+        .stat-lbl{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-top:4px;letter-spacing:.06em;text-transform:uppercase}
+        .stats-section-title{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:16px 0 8px}
+        .stats-list-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);font-family:'DM Mono',monospace;font-size:12px}
+        .stats-list-row:last-child{border-bottom:none}
+        .stats-list-name{flex:1;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+        .stats-list-count{color:var(--accent);font-weight:500}
+        .stats-bar-wrap{flex:2;height:5px;background:var(--dim);border-radius:3px;overflow:hidden}
+        .stats-bar{height:100%;background:var(--accent);border-radius:3px;transition:width .4s ease}
+        .stats-week{display:flex;gap:4px;align-items:flex-end;height:60px;margin-top:4px}
+        .week-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
+        .week-bar{width:100%;background:var(--accent);border-radius:3px 3px 0 0;min-height:2px;transition:height .4s ease;opacity:.7}
+        .week-bar.today{opacity:1}
+        .week-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);text-align:center}
+
         /* ── Word cards ── */
         .word-card{background:var(--surface);border:1px solid var(--border);border-radius:15px;margin-bottom:15px;overflow:hidden}
         .word-header{padding:15px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
@@ -171,6 +210,7 @@
         <div class="header-actions">
             <button class="header-btn" onclick="openSidebar()">☰ Listes</button>
             <button class="header-btn" onclick="openFlashcards()">Flashcards</button>
+            <button class="header-btn" onclick="openStats()">📊</button>
             <button onclick="toggleTheme()" id="themeBtn" style="background:none;border:none;font-size:20px;cursor:pointer">🌙</button>
         </div>
     </div>
@@ -193,7 +233,25 @@
     </div>
     <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(event)">
 
+    <!-- Search + sort -->
+    <div class="filter-row">
+        <input class="filter-search" id="searchInput" placeholder="Rechercher…" oninput="render()">
+        <button class="sort-btn" id="sortAlpha" onclick="setSort('alpha')">A–Z</button>
+        <button class="sort-btn" id="sortDate"  onclick="setSort('date')">Date</button>
+    </div>
+
     <div id="wordsList"></div>
+</div>
+
+<!-- Stats panel -->
+<div class="stats-overlay" id="statsOverlay" onclick="e=>e.target===this&&closeStats()">
+    <div class="stats-panel">
+        <div class="stats-head">
+            <span class="stats-title">Statistiques</span>
+            <button class="stats-close" onclick="closeStats()">×</button>
+        </div>
+        <div id="statsContent"></div>
+    </div>
 </div>
 
 <!-- Flashcards -->
@@ -209,6 +267,7 @@
                     </div>
                     <div class="fc-face fc-back">
                         <div class="fc-trad" id="fcTrad"></div>
+                        <button class="btn-audio" id="fcAudio" onclick="speakCurrent()" title="Écouter">🔊</button>
                         <div class="fc-def-sm" id="fcDef"></div>
                     </div>
                 </div>
@@ -234,6 +293,7 @@
 
     let openWord     = null;
     let activeListId = null;  // null = all
+    let sortMode     = 'date'; // 'date' | 'alpha'
 
     function saveWords(){ localStorage.setItem('dico_data',  JSON.stringify(words)); }
     function saveNodes(){ localStorage.setItem('dico_nodes', JSON.stringify(nodes)); }
@@ -396,7 +456,19 @@
     }
 
     function getPool(){
-        return activeListId !== null ? words.filter(w=>w.listId===activeListId) : words;
+        const q = (document.getElementById('searchInput')?.value||'').trim().toLowerCase();
+        let pool = activeListId !== null ? words.filter(w=>w.listId===activeListId) : [...words];
+        if(q) pool = pool.filter(w => w.term.toLowerCase().includes(q) || (w.translation||'').toLowerCase().includes(q));
+        if(sortMode==='alpha') pool.sort((a,b)=>a.term.localeCompare(b.term));
+        // 'date' = insertion order (already newest-first)
+        return pool;
+    }
+
+    function setSort(mode){
+        sortMode = mode;
+        document.getElementById('sortAlpha').classList.toggle('on', mode==='alpha');
+        document.getElementById('sortDate').classList.toggle('on',  mode==='date');
+        render();
     }
 
     /* ═══════════════════════════════════════
@@ -448,7 +520,10 @@
             return `<div class="word-card">
 <div class="word-header" onclick="toggleWord(${w.id})">
   <span class="word-title">${esc(w.term)}${badge}</span>
-  <span>${openWord===w.id?'▲':'▼'}</span>
+  <span style="display:flex;align-items:center;gap:6px">
+    <button class="btn-audio" onclick="event.stopPropagation();speak('${esc(w.term)}')" title="Écouter">🔊</button>
+    <span>${openWord===w.id?'▲':'▼'}</span>
+  </span>
 </div>
 ${openWord===w.id ? `<div class="word-content">
   <span class="translation">${esc(w.translation)}</span>
@@ -613,8 +688,101 @@ ${d.example?`<span class="example">"${esc(d.example)}"</span>`:''}
     }
     function fcJump(i){ fcSeen.add(fcIdx); fcIdx=i; fcFlipped=false; renderCards(); }
 
+    /* ═══════════════════════════════════════
+       AUDIO — Web Speech API
+    ═══════════════════════════════════════ */
+    function speak(term){
+        if(!window.speechSynthesis) return;
+        window.speechSynthesis.cancel();
+        const utt = new SpeechSynthesisUtterance(term);
+        utt.lang = 'en-US'; utt.rate = 0.9;
+        // Try to get an English voice
+        const voices = window.speechSynthesis.getVoices();
+        const enVoice = voices.find(v=>v.lang.startsWith('en'));
+        if(enVoice) utt.voice = enVoice;
+        window.speechSynthesis.speak(utt);
+    }
+    function speakCurrent(){
+        const pool = getPool();
+        if(pool[fcIdx]) speak(pool[fcIdx].term);
+    }
+
+    /* ═══════════════════════════════════════
+       STATS
+    ═══════════════════════════════════════ */
+    function openStats(){
+        renderStats();
+        document.getElementById('statsOverlay').classList.add('open');
+    }
+    function closeStats(){
+        document.getElementById('statsOverlay').classList.remove('open');
+    }
+
+    function renderStats(){
+        const total = words.length;
+        const lists = nodes.filter(n=>!n.isFolder);
+        const unassigned = words.filter(w=>!w.listId).length;
+
+        // Words added per day for the last 7 days
+        const days = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+        const now = new Date(); now.setHours(0,0,0,0);
+        const weekCounts = Array(7).fill(0);
+        words.forEach(w => {
+            const d = new Date(w.id); // id = timestamp
+            d.setHours(0,0,0,0);
+            const diff = Math.round((now - d) / 86400000);
+            if(diff >= 0 && diff < 7) weekCounts[6 - diff]++;
+        });
+        const maxWeek = Math.max(...weekCounts, 1);
+        const todayIdx = 6;
+
+        // Build week bars
+        const weekLabels = Array.from({length:7}, (_,i) => {
+            const d = new Date(now); d.setDate(d.getDate() - (6-i));
+            return days[d.getDay()];
+        });
+        const weekHTML = weekCounts.map((c,i) => {
+            const h = Math.max(4, Math.round((c/maxWeek)*54));
+            return `<div class="week-bar-wrap">
+            <div class="week-bar${i===todayIdx?' today':''}" style="height:${h}px" title="${c} mot${c!==1?'s':''}"></div>
+            <div class="week-lbl">${weekLabels[i]}</div>
+        </div>`;
+        }).join('');
+
+        // Per-list breakdown
+        const listRows = lists.map(l => {
+            const c = words.filter(w=>w.listId===l.id).length;
+            const pct = total ? Math.round(c/total*100) : 0;
+            return `<div class="stats-list-row">
+            <span class="stats-list-name">📄 ${esc(l.name)}</span>
+            <div class="stats-bar-wrap"><div class="stats-bar" style="width:${pct}%"></div></div>
+            <span class="stats-list-count">${c}</span>
+        </div>`;
+        }).join('');
+
+        const thisWeek = weekCounts.reduce((a,b)=>a+b,0);
+        const addedToday = weekCounts[6];
+
+        document.getElementById('statsContent').innerHTML = `
+        <div class="stats-grid">
+            <div class="stat-card"><div class="stat-val">${total}</div><div class="stat-lbl">Mots au total</div></div>
+            <div class="stat-card"><div class="stat-val">${lists.length}</div><div class="stat-lbl">Listes</div></div>
+            <div class="stat-card"><div class="stat-val">${addedToday}</div><div class="stat-lbl">Ajoutés aujourd'hui</div></div>
+            <div class="stat-card"><div class="stat-val">${thisWeek}</div><div class="stat-lbl">Cette semaine</div></div>
+        </div>
+        <div class="stats-section-title">Activité — 7 derniers jours</div>
+        <div class="stats-week">${weekHTML}</div>
+        ${lists.length ? `<div class="stats-section-title">Par liste</div>${listRows}` : ''}
+        ${unassigned ? `<div class="stats-list-row">
+            <span class="stats-list-name" style="color:var(--muted)">Sans liste</span>
+            <div class="stats-bar-wrap"><div class="stats-bar" style="width:${Math.round(unassigned/total*100)}%;opacity:.4"></div></div>
+            <span class="stats-list-count" style="opacity:.5">${unassigned}</span>
+        </div>` : ''}`;
+    }
+
     /* ─── Init ─── */
     render();
+    document.getElementById('sortDate').classList.add('on');
 </script>
 </body>
 </html>
