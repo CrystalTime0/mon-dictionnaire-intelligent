@@ -24,133 +24,69 @@ body{background:var(--bg);color:var(--text);font-family:'Fraunces',Georgia,serif
 body.light{--bg:#f7f4ef;--surface:#ffffff;--card:#f0ece4;--border:#ddd8ce;--text:#1a1712;--muted:#9b9184;--accent:#b8860b;--accent2:#c0552a;--dim:#c8c2b8}
 .app{max-width:560px;margin:0 auto;padding:0 18px 80px}
 
-/* Header */
+/* Header & UI Components */
 .hdr{padding:28px 0 18px;display:flex;align-items:center;justify-content:space-between;gap:8px}
-.hdr h1{font-size:22px;font-weight:600;letter-spacing:-.3px;line-height:1}
+.hdr h1{font-size:22px;font-weight:600;letter-spacing:-.3px}
 .hdr h1 em{font-style:italic;color:var(--accent)}
 .hdr-sub{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);margin-top:4px}
 .hdr-actions{display:flex;gap:6px;align-items:center}
-.pill{padding:7px 13px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.05em;border:1px solid var(--border);border-radius:20px;background:transparent;color:var(--muted);cursor:pointer;transition:all .18s;white-space:nowrap;-webkit-tap-highlight-color:transparent}
+.pill{padding:7px 13px;font-family:'DM Mono',monospace;font-size:11px;border:1px solid var(--border);border-radius:20px;background:transparent;color:var(--muted);cursor:pointer;-webkit-tap-highlight-color:transparent}
 .pill.on{background:var(--accent);color:#0f0e0c;border-color:var(--accent)}
 body.light .pill.on{color:#fff}
-.pill:active{opacity:.7}
-.icon-btn{width:34px;height:34px;border-radius:50%;border:1px solid var(--border);background:var(--card);cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0;-webkit-tap-highlight-color:transparent}
+.icon-btn{width:34px;height:34px;border-radius:50%;border:1px solid var(--border);background:var(--card);cursor:pointer;display:flex;align-items:center;justify-content:center}
 
-/* Source badges */
-.src-badge{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
-.badge{font-family:'DM Mono',monospace;font-size:10px;padding:3px 8px;border-radius:4px;letter-spacing:.06em;background:rgba(232,197,122,.06);border:1px solid rgba(232,197,122,.12);color:var(--muted)}
-
-/* Clipboard banner */
-.clip-banner{display:flex;align-items:center;gap:10px;margin-bottom:12px;padding:10px 14px;background:rgba(232,197,122,.07);border:1px solid rgba(232,197,122,.18);border-radius:10px;animation:bannerIn .3s ease}
-body.light .clip-banner{background:rgba(184,134,11,.07);border-color:rgba(184,134,11,.2)}
-@keyframes bannerIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
-.clip-info{flex:1;min-width:0}
-.clip-lbl{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px}
-.clip-word{font-size:17px;font-weight:300;font-style:italic;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.clip-add-btn{padding:8px 14px;font-family:'DM Mono',monospace;font-size:11px;border:none;border-radius:8px;background:var(--accent);color:#0f0e0c;cursor:pointer;flex-shrink:0;-webkit-tap-highlight-color:transparent}
-body.light .clip-add-btn{color:#fff}
-.clip-add-btn:disabled{opacity:.4}
-.clip-x{background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:20px;line-height:1;padding:4px;flex-shrink:0}
-
-/* Add bar */
-.add-bar{display:flex;gap:8px;margin-bottom:10px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px;align-items:center;transition:border-color .2s}
-.add-bar:focus-within{border-color:var(--dim)}
-.add-input{flex:1;background:transparent;border:none;outline:none;font-family:'Fraunces',serif;font-size:18px;font-weight:300;color:var(--text);min-width:0;-webkit-appearance:none}
-.add-input::placeholder{color:var(--muted);font-style:italic}
-.add-go{width:36px;height:36px;border-radius:8px;background:var(--accent);border:none;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px;color:#0f0e0c;-webkit-tap-highlight-color:transparent;transition:opacity .15s,transform .1s}
+/* Input Bar */
+.add-bar{display:flex;gap:8px;margin-bottom:10px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px;align-items:center}
+.add-input{flex:1;background:transparent;border:none;outline:none;font-family:'Fraunces',serif;font-size:18px;color:var(--text)}
+.add-go{width:36px;height:36px;border-radius:8px;background:var(--accent);border:none;cursor:pointer;color:#0f0e0c;display:flex;align-items:center;justify-content:center}
 body.light .add-go{color:#fff}
-.add-go:active{opacity:.75;transform:scale(.93)}
-.add-go:disabled{opacity:.3}
-.ring{width:14px;height:14px;border:2px solid rgba(0,0,0,.2);border-top-color:#0f0e0c;border-radius:50%;animation:spin .7s linear infinite}
-body.light .ring{border-color:rgba(255,255,255,.3);border-top-color:#fff}
-@keyframes spin{to{transform:rotate(360deg)}}
-.err{margin-bottom:12px;font-family:'DM Mono',monospace;font-size:11px;color:var(--accent2);padding:7px 10px;background:rgba(212,132,90,.08);border-radius:6px}
 
-/* Toolbar */
-.toolbar{display:flex;gap:8px;margin-bottom:14px}
-.io-btn{padding:6px 12px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.04em;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--muted);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s}
-.io-btn:active{border-color:var(--dim);color:var(--text)}
-.io-btn.imp:active{border-color:var(--accent);color:var(--accent)}
-
-/* Setup guide */
-.setup-toggle{display:flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);cursor:pointer;background:none;border:none;padding:0 0 14px;letter-spacing:.04em;-webkit-tap-highlight-color:transparent}
-.setup-box{margin-bottom:18px;background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
-.setup-head{padding:11px 16px;background:var(--card);font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
-.setup-step{padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:12px;align-items:flex-start}
-.step-n{width:22px;height:22px;border-radius:50%;background:var(--accent);color:#0f0e0c;font-family:'DM Mono',monospace;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
-body.light .step-n{color:#fff}
-.step-txt{font-size:14px;font-weight:300;line-height:1.6;color:var(--text)}
-.step-txt strong{font-weight:600}
-
-/* Word list */
-.list{display:flex;flex-direction:column;gap:2px}
-.wrow{background:var(--surface);border:1px solid transparent;border-radius:8px;overflow:hidden;transition:border-color .15s}
-.wrow.open{border-color:var(--dim)}
-.wrow-top{display:flex;align-items:center;padding:14px 15px;gap:10px;cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none}
-.wrow-word{flex:1;font-size:19px;font-weight:300;line-height:1}
-.wrow-chev{color:var(--muted);font-size:11px;transition:transform .22s;flex-shrink:0}
-.wrow.open .wrow-chev{transform:rotate(180deg)}
-.wrow-body{padding:0 15px 16px;border-top:1px solid var(--border);animation:fadeSlide .2s ease}
+/* Dictionary Rendering (Google Style) */
+.wrow{background:var(--surface);border:1px solid transparent;border-radius:12px;overflow:hidden;margin-bottom:8px}
+.wrow.open{border-color:var(--border);background:var(--surface)}
+.wrow-top{display:flex;align-items:center;padding:16px;cursor:pointer}
+.wrow-word{flex:1;font-size:20px;font-weight:400}
+.wrow-body{padding:0 16px 20px;animation:fadeSlide .2s ease}
 @keyframes fadeSlide{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
 
-/* Translation */
-.wrow-trad{font-size:22px;font-style:italic;color:var(--accent);margin:12px 0 14px;font-weight:600;font-family:'Fraunces',serif}
+.trad-main{font-size:24px;font-style:italic;color:var(--accent);font-weight:600;margin-bottom:16px;display:block}
 
-/* Dictionary-style definitions */
-.dict-pos{display:inline-block;font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:4px;padding:2px 7px;margin-bottom:10px}
-.dict-meanings{display:flex;flex-direction:column;gap:12px;margin-bottom:14px}
-.dict-num{font-family:'DM Mono',monospace;font-size:10px;color:var(--accent);margin-bottom:3px;letter-spacing:.05em}
-.dict-def{font-family:'Lora',serif;font-size:14px;font-weight:400;line-height:1.65;color:var(--text)}
-.dict-example{font-family:'Lora',serif;font-size:13px;font-style:italic;color:var(--muted);margin-top:4px;padding-left:10px;border-left:2px solid var(--dim);line-height:1.5}
-.dict-similar{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
-.dict-sim-tag{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:3px;padding:2px 6px;letter-spacing:.03em}
-.dict-divider{height:1px;background:var(--border);margin:12px 0}
+/* Definition blocks */
+.dict-section{margin-bottom:20px}
+.dict-pos{font-family:'Lora',serif;font-style:italic;font-weight:600;font-size:15px;color:var(--accent2);margin-bottom:8px;display:block}
+.dict-entry{margin-bottom:14px;padding-left:4px}
+.dict-def-line{display:flex;gap:8px;line-height:1.5;margin-bottom:4px}
+.dict-num{font-family:'DM Mono',monospace;font-size:13px;color:var(--muted);flex-shrink:0;padding-top:2px}
+.dict-text{font-size:15px;color:var(--text);font-weight:300}
+.dict-ex{color:var(--muted);font-size:14px;margin:4px 0 8px 18px;display:block}
 
-.wrow-del{margin-top:4px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.08em;color:var(--muted);background:transparent;border:1px solid var(--border);border-radius:5px;padding:5px 10px;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.wrow-del:active{color:var(--accent2);border-color:var(--accent2)}
+/* Similar / Synonyms */
+.dict-similar-box{margin:8px 0 8px 18px}
+.similar-label{font-size:11px;text-transform:uppercase;letter-spacing:0.05em;color:var(--muted);margin-bottom:4px;display:block}
+.similar-tags{display:flex;flex-wrap:wrap;gap:6px}
+.sim-tag{font-size:12px;background:var(--card);border:1px solid var(--border);padding:2px 10px;border-radius:12px;color:var(--text)}
 
-/* Empty */
-.empty{text-align:center;padding:56px 0;color:var(--muted)}
-.empty p:first-child{font-size:26px;font-style:italic;font-weight:300;color:var(--dim);margin-bottom:8px}
-.empty p:last-child{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase}
+.wrow-del{margin-top:15px;font-size:10px;color:var(--muted);background:none;border:1px solid var(--border);padding:4px 8px;border-radius:4px;cursor:pointer}
 
-/* ── Flashcards ── */
-.fc-wrap{display:flex;flex-direction:column;align-items:center;padding-top:4px}
-.fc-prog{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);margin-bottom:20px;letter-spacing:.1em}
-.fc-prog em{color:var(--text);font-style:normal}
-.fc-scene{width:100%;max-width:460px;height:250px;perspective:1000px;cursor:pointer;margin-bottom:24px;-webkit-tap-highlight-color:transparent}
-.fc-card{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .52s cubic-bezier(.4,0,.2,1)}
+/* Loader */
+.ring{width:16px;height:16px;border:2px solid rgba(0,0,0,.1);border-top-color:currentColor;border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Flashcards */
+.fc-wrap{display:flex;flex-direction:column;align-items:center;padding-top:20px}
+.fc-scene{width:100%;height:300px;perspective:1000px;cursor:pointer}
+.fc-card{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .5s}
 .fc-card.flipped{transform:rotateY(180deg)}
-.fc-face{position:absolute;inset:0;border-radius:14px;border:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;backface-visibility:hidden;-webkit-backface-visibility:hidden;text-align:center;gap:8px}
-.fc-front{background:var(--surface)}
-.fc-back{background:var(--card);transform:rotateY(180deg)}
-.fc-hint{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted)}
-.fc-word-front{font-family:'Fraunces',serif;font-size:clamp(26px,7vw,38px);font-weight:300;line-height:1.1;color:var(--text)}
-/* Back side : translation in Lora italic, definition in DM Mono */
-.fc-trad{font-family:'Lora',serif;font-size:clamp(20px,5vw,28px);font-style:italic;font-weight:600;color:var(--accent);line-height:1.2}
-.fc-def-sm{font-family:'DM Mono',monospace;font-size:11px;font-weight:300;color:var(--muted);line-height:1.6;max-width:300px;letter-spacing:.02em}
-
-.fc-nav{display:flex;gap:12px;align-items:center}
-.nav-btn{width:44px;height:44px;border-radius:50%;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent}
-.nav-btn:disabled{opacity:.3}
-.nav-btn:active:not(:disabled){background:var(--card)}
-.flip-btn{padding:10px 24px;border-radius:20px;border:1px solid var(--accent);background:transparent;color:var(--accent);font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.flip-btn:active{background:var(--accent);color:#0f0e0c}
-body.light .flip-btn:active{color:#fff}
-.fc-dots{display:flex;gap:6px;margin-top:18px;flex-wrap:wrap;justify-content:center;max-width:300px}
-.dot{width:7px;height:7px;border-radius:50%;background:var(--dim);cursor:pointer;-webkit-tap-highlight-color:transparent}
-.dot.cur{background:var(--accent)}
-.dot.seen{background:var(--muted)}
-
-/* Toast */
-.toast{position:fixed;bottom:calc(20px + var(--safe-bot));left:50%;transform:translate(-50%,10px);background:var(--text);color:var(--bg);font-family:'DM Mono',monospace;font-size:12px;padding:10px 20px;border-radius:20px;white-space:nowrap;z-index:999;pointer-events:none;box-shadow:0 4px 20px rgba(0,0,0,.3);opacity:0;transition:opacity .25s,transform .25s}
-.toast.show{opacity:1;transform:translate(-50%,0)}
+.fc-face{position:absolute;inset:0;border-radius:20px;border:1px solid var(--border);backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px;text-align:center;background:var(--card)}
+.fc-back{transform:rotateY(180deg);background:var(--surface)}
+.fc-word-front{font-size:32px;font-weight:600}
+.fc-trad{font-size:24px;color:var(--accent);font-style:italic;margin-bottom:10px}
+.fc-def-sm{font-size:13px;color:var(--muted);line-height:1.4}
 </style>
 </head>
 <body>
 <div class="app">
   <div id="mainApp">
-
     <div class="hdr">
       <div>
         <h1>Mon <em>Dico</em></h1>
@@ -158,326 +94,176 @@ body.light .flip-btn:active{color:#fff}
       </div>
       <div class="hdr-actions">
         <button class="pill on" id="btnList" onclick="setMode('list')">Liste</button>
-        <button class="pill" id="btnCards" onclick="setMode('cards')">Flashcards</button>
+        <button class="pill" id="btnCards" onclick="setMode('cards')">Révision</button>
         <button class="icon-btn" onclick="toggleTheme()" id="themeBtn">☀️</button>
       </div>
     </div>
 
-    <div class="src-badge">
-      <span class="badge">MyMemory · traduction</span>
-      <span class="badge">Free Dictionary · définitions</span>
-      <span class="badge">100% gratuit</span>
-    </div>
-
-    <div class="clip-banner" id="clipBanner" style="display:none">
-      <div class="clip-info">
-        <div class="clip-lbl">Copié depuis Readzra</div>
-        <div class="clip-word" id="clipWordEl"></div>
-      </div>
-      <button class="clip-add-btn" id="clipBtn" onclick="addFromClip()">Ajouter →</button>
-      <button class="clip-x" onclick="dismissClip()">×</button>
-    </div>
-
     <div class="add-bar">
-      <input class="add-input" id="wordInput" type="text" placeholder="Mot anglais…"
-        autocorrect="off" autocapitalize="none" spellcheck="false"
-        onkeydown="if(event.key==='Enter')addWord()">
+      <input class="add-input" id="wordInput" type="text" placeholder="Entrez un mot anglais..." autocomplete="off">
       <button class="add-go" id="addBtn" onclick="addWord()">→</button>
     </div>
-    <div class="err" id="errMsg" style="display:none"></div>
+    <div id="errMsg" style="display:none; color:var(--accent2); font-size:12px; margin-bottom:10px; padding:0 10px;"></div>
 
-    <div class="toolbar">
-      <button class="io-btn" onclick="exportJSON()">↓ Exporter JSON</button>
-      <button class="io-btn imp" onclick="document.getElementById('importFile').click()">↑ Importer JSON</button>
-    </div>
-    <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(event)">
-
-    <button class="setup-toggle" onclick="toggleSetup()">
-      <span id="setupArrow">▸</span>&nbsp;<span id="setupLbl">Comment transférer depuis Readzra ?</span>
-    </button>
-    <div id="setupBox" style="display:none" class="setup-box">
-      <div class="setup-head">📱 Transfert depuis Readzra (Android)</div>
-      <div class="setup-step"><div class="step-n">1</div><div class="step-txt">Dans <strong>Readzra</strong>, appuyez longuement sur un mot → <strong>Copier</strong>.</div></div>
-      <div class="setup-step"><div class="step-n">2</div><div class="step-txt">Revenez dans <strong>Mon Dictionnaire Intelligent</strong>. La bannière dorée apparaît automatiquement.</div></div>
-      <div class="setup-step"><div class="step-n">3</div><div class="step-txt">Appuyez sur <strong>"Ajouter →"</strong> ✓</div></div>
-    </div>
-
-    <!-- List mode -->
     <div id="listMode">
       <div class="list" id="wordList"></div>
-      <div class="empty" id="emptyState" style="display:none">
-        <p>Aucun mot encore</p>
-        <p>Copiez un mot dans Readzra</p>
-      </div>
     </div>
 
-    <!-- Flashcard mode -->
     <div id="cardsMode" style="display:none">
       <div class="fc-wrap">
-        <div class="fc-prog" id="fcProg"></div>
         <div class="fc-scene" onclick="flipCard()">
           <div class="fc-card" id="fcCard">
-            <div class="fc-face fc-front">
-              <div class="fc-hint">Appuyez pour révéler</div>
-              <div class="fc-word-front" id="fcWord"></div>
-            </div>
+            <div class="fc-face fc-front"><div class="fc-word-front" id="fcWord"></div></div>
             <div class="fc-face fc-back">
               <div class="fc-trad" id="fcTrad"></div>
               <div class="fc-def-sm" id="fcDef"></div>
             </div>
           </div>
         </div>
-        <div class="fc-nav">
-          <button class="nav-btn" id="fcPrev" onclick="fcGo(-1)">←</button>
-          <button class="flip-btn" id="flipBtnEl" onclick="flipCard()">Révéler</button>
-          <button class="nav-btn" id="fcNext" onclick="fcGo(1)">→</button>
+        <div style="margin-top:20px; display:flex; gap:20px;">
+          <button class="icon-btn" onclick="fcGo(-1)">←</button>
+          <button class="pill" onclick="flipCard()">Révéler</button>
+          <button class="icon-btn" onclick="fcGo(1)">→</button>
         </div>
-        <div class="fc-dots" id="fcDots"></div>
       </div>
     </div>
-
   </div>
 </div>
-<div class="toast" id="toast"></div>
 
 <script>
-const LS = { WORDS:'vocab_words_v2', THEME:'vocab_theme' };
-let words=[], mode='list', openId=null;
-let fcIdx=0, fcFlipped=false, fcSeen=new Set();
-let dark=true, busy=false;
-let clipDetected='', lastClip='', showSetup=false;
+const LS_KEY = 'mon_dico_v3';
+let words = JSON.parse(localStorage.getItem(LS_KEY) || '[]');
+let mode = 'list', openId = null, fcIdx = 0, fcFlipped = false;
 
-window.addEventListener('DOMContentLoaded', () => {
-  if (localStorage.getItem(LS.THEME)==='light') applyTheme(false);
-  try { const w=localStorage.getItem(LS.WORDS); if(w) words=JSON.parse(w); } catch{}
-  setupClipboard();
-  render();
-});
-
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>{});
-
-function applyTheme(isDark){
-  dark=isDark;
-  document.body.classList.toggle('light',!dark);
-  document.getElementById('themeBtn').textContent=dark?'☀️':'🌙';
-  document.getElementById('themeColor').content=dark?'#0f0e0c':'#f7f4ef';
-  localStorage.setItem(LS.THEME,dark?'dark':'light');
-}
-function toggleTheme(){ applyTheme(!dark); }
-function toggleSetup(){
-  showSetup=!showSetup;
-  document.getElementById('setupBox').style.display=showSetup?'block':'none';
-  document.getElementById('setupArrow').textContent=showSetup?'▾':'▸';
-  document.getElementById('setupLbl').textContent=showSetup?'Masquer':'Comment transférer depuis Readzra ?';
-}
-let toastT;
-function showToast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),2500); }
-function showErr(msg){ const e=document.getElementById('errMsg'); e.textContent=msg; e.style.display=msg?'block':'none'; }
-function saveWords(){ localStorage.setItem(LS.WORDS,JSON.stringify(words)); }
-
-/* ── MyMemory : traduction EN→FR ── */
-async function getTranslation(word) {
-  const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(word)}&langpair=en|fr`);
-  if (!res.ok) throw new Error('translation');
-  const d = await res.json();
-  if (d?.responseStatus !== 200 || !d?.responseData?.translatedText) throw new Error('translation');
+// APIs
+async function getTranslation(w) {
+  const r = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(w)}&langpair=en|fr`);
+  const d = await r.json();
   return d.responseData.translatedText;
 }
 
-/* ── Free Dictionary API : définitions complètes ── */
-async function getDefinitions(word) {
-  try {
-    const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`);
-    if (!res.ok) return [];
-    const data = await res.json();
-    if (!Array.isArray(data)) return [];
-    // Retourne tous les sens groupés par partie du discours
-    const result = [];
-    for (const entry of data) {
-      for (const meaning of (entry.meanings || [])) {
-        const pos = meaning.partOfSpeech || '';
-        const defs = (meaning.definitions || []).slice(0, 3).map(d => ({
-          definition: d.definition || '',
-          example: d.example || '',
-          synonyms: (d.synonyms || []).slice(0, 6)
-        }));
-        if (defs.length) result.push({ pos, defs });
-      }
-      if (result.length >= 3) break; // max 3 parties du discours
-    }
-    return result;
-  } catch { return []; }
+async function getDictionary(w) {
+  const r = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(w)}`);
+  if(!r.ok) return [];
+  return await r.json();
 }
 
-/* ── Add word ── */
-async function addWord(override) {
-  if (busy) return;
-  const w=(override||document.getElementById('wordInput').value).trim();
-  if (!w) return;
-  if (words.some(x=>x.term.toLowerCase()===w.toLowerCase())) { showErr('Déjà dans votre dictionnaire.'); return; }
-  setBusy(true); showErr('');
+async function addWord() {
+  const input = document.getElementById('wordInput');
+  const val = input.value.trim().toLowerCase();
+  if(!val || words.some(x => x.term === val)) return;
+
+  setLoading(true);
   try {
-    const [translation, meanings] = await Promise.all([getTranslation(w), getDefinitions(w)]);
-    // première définition courte pour la flashcard
-    const firstDef = meanings?.[0]?.defs?.[0]?.definition || '';
-    const entry = { id:Date.now(), term:w, translation, meanings, firstDef, at:Date.now() };
-    words.unshift(entry); saveWords();
-    if (!override) document.getElementById('wordInput').value='';
-    openId=entry.id; dismissClip();
-    showToast(`"${w}" ajouté ✓`);
+    const [trad, dict] = await Promise.all([getTranslation(val), getDictionary(val)]);
+    const entry = {
+      id: Date.now(),
+      term: val,
+      translation: trad,
+      data: dict[0] || null,
+      at: new Date()
+    };
+    words.unshift(entry);
+    save();
+    input.value = '';
     render();
-  } catch { showErr('Erreur. Vérifiez votre connexion internet.'); }
-  setBusy(false);
-}
-
-function setBusy(b){
-  busy=b;
-  const btn=document.getElementById('addBtn');
-  const cb=document.getElementById('clipBtn');
-  btn.innerHTML=b?'<span class="ring"></span>':'→';
-  btn.disabled=b;
-  if(cb){cb.textContent=b?'…':'Ajouter →'; cb.disabled=b;}
-}
-
-function deleteWord(id){
-  words=words.filter(w=>w.id!==id);
-  if(openId===id) openId=null;
-  saveWords(); render();
-  showToast('Mot supprimé');
-}
-
-function setMode(m){
-  mode=m; fcIdx=0; fcFlipped=false; fcSeen=new Set();
-  document.getElementById('btnList').classList.toggle('on',m==='list');
-  document.getElementById('btnCards').classList.toggle('on',m==='cards');
-  document.getElementById('listMode').style.display=m==='list'?'block':'none';
-  document.getElementById('cardsMode').style.display=m==='cards'?'block':'none';
-  if(m==='cards') renderCards();
-}
-
-/* Clipboard */
-async function readClip(){
-  try{
-    if(!navigator?.clipboard?.readText) return '';
-    const t=await navigator.clipboard.readText();
-    const c=t.trim();
-    if(c.length>0&&c.length<60&&!c.includes('http')&&!c.includes('\n')) return c;
-  }catch{}
-  return '';
-}
-function setupClipboard(){
-  async function check(){ const w=await readClip(); if(w&&w!==lastClip){ lastClip=w; clipDetected=w; showClipBanner(w); } }
-  window.addEventListener('focus',check);
-  document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible') check(); });
-  check();
-}
-function showClipBanner(w){ document.getElementById('clipWordEl').textContent=`"${w}"`; document.getElementById('clipBanner').style.display='flex'; }
-function dismissClip(){ document.getElementById('clipBanner').style.display='none'; clipDetected=''; }
-function addFromClip(){ addWord(clipDetected); }
-
-/* Export / Import */
-function exportJSON(){
-  const blob=new Blob([JSON.stringify(words,null,2)],{type:'application/json'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  a.href=url; a.download=`mon-dico-${new Date().toISOString().slice(0,10)}.json`;
-  a.click(); URL.revokeObjectURL(url);
-  showToast(`${words.length} mots exportés ✓`);
-}
-function importJSON(e){
-  const file=e.target.files?.[0]; if(!file) return;
-  const reader=new FileReader();
-  reader.onload=(ev)=>{
-    try{
-      const parsed=JSON.parse(ev.target.result);
-      if(!Array.isArray(parsed)) throw new Error();
-      const ex=new Set(words.map(w=>w.term.toLowerCase()));
-      const newOnes=parsed.filter(w=>w.term&&!ex.has(w.term.toLowerCase()));
-      words=[...newOnes,...words]; saveWords(); render();
-      showToast(`${newOnes.length} mot${newOnes.length!==1?'s':''} importé${newOnes.length!==1?'s':''} ✓`);
-    }catch{ showToast('Fichier invalide ✗'); }
-  };
-  reader.readAsText(file); e.target.value='';
-}
-
-/* ── Render : build dictionary HTML ── */
-function buildDictHTML(meanings) {
-  if (!meanings || !meanings.length) return '';
-  let html = '';
-  meanings.forEach((m, mi) => {
-    if (mi > 0) html += '<div class="dict-divider"></div>';
-    html += `<span class="dict-pos">${esc(m.pos)}</span>`;
-    html += '<div class="dict-meanings">';
-    m.defs.forEach((d, di) => {
-      html += `<div>`;
-      html += `<div class="dict-num">${di + 1}.</div>`;
-      html += `<div class="dict-def">${esc(d.definition)}</div>`;
-      if (d.example) html += `<div class="dict-example">"${esc(d.example)}"</div>`;
-      if (d.synonyms && d.synonyms.length) {
-        html += `<div class="dict-similar">`;
-        d.synonyms.forEach(s => { html += `<span class="dict-sim-tag">${esc(s)}</span>`; });
-        html += `</div>`;
-      }
-      html += `</div>`;
-    });
-    html += '</div>';
-  });
-  return html;
-}
-
-function render(){
-  const el=document.getElementById('wordCount');
-  if(el) el.textContent=`${words.length} mot${words.length!==1?'s':''}`;
-  const list=document.getElementById('wordList');
-  const empty=document.getElementById('emptyState');
-  if(!list) return;
-  if(words.length===0){ list.innerHTML=''; empty.style.display='block'; return; }
-  empty.style.display='none';
-  list.innerHTML=words.map(w=>{
-    const open=openId===w.id;
-    const dictHTML = open ? buildDictHTML(w.meanings) : '';
-    return `<div class="wrow${open?' open':''}">
-      <div class="wrow-top" onclick="toggleRow(${w.id})">
-        <span class="wrow-word">${esc(w.term)}</span>
-        <span class="wrow-chev">▾</span>
-      </div>
-      ${open?`<div class="wrow-body">
-        <div class="wrow-trad">${esc(w.translation)}</div>
-        ${dictHTML || `<div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted)">Aucune définition disponible</div>`}
-        <button class="wrow-del" onclick="deleteWord(${w.id})">Supprimer</button>
-      </div>`:''}
-    </div>`;
-  }).join('');
-  if(mode==='cards') renderCards();
-}
-
-function toggleRow(id){ openId=openId===id?null:id; render(); }
-function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
-/* Flashcards */
-function renderCards(){
-  if(!words.length) return;
-  fcIdx=Math.min(fcIdx,words.length-1);
-  const c=words[fcIdx];
-  document.getElementById('fcProg').innerHTML=`<em>${fcIdx+1}</em> / ${words.length}${fcSeen.size>0?` · ${fcSeen.size} vu${fcSeen.size>1?'s':''}`:''}`;
-  document.getElementById('fcWord').textContent=c.term;
-  document.getElementById('fcTrad').textContent=c.translation;
-  // Show first short definition on card back
-  const shortDef = c.firstDef || c.meanings?.[0]?.defs?.[0]?.definition || '';
-  document.getElementById('fcDef').textContent = shortDef ? shortDef.slice(0,80)+(shortDef.length>80?'…':'') : '';
-  document.getElementById('fcCard').classList.toggle('flipped',fcFlipped);
-  document.getElementById('flipBtnEl').textContent=fcFlipped?'Masquer':'Révéler';
-  document.getElementById('fcPrev').disabled=fcIdx===0;
-  document.getElementById('fcNext').disabled=fcIdx===words.length-1;
-  if(words.length<=40){
-    document.getElementById('fcDots').innerHTML=words.map((_,i)=>
-      `<div class="dot${i===fcIdx?' cur':fcSeen.has(i)?' seen':''}" onclick="fcJump(${i})"></div>`
-    ).join('');
+  } catch(e) {
+    document.getElementById('errMsg').textContent = "Erreur de connexion";
+    document.getElementById('errMsg').style.display = 'block';
   }
+  setLoading(false);
 }
-function flipCard(){ fcFlipped=!fcFlipped; fcSeen.add(fcIdx); renderCards(); }
-function fcGo(d){ const n=fcIdx+d; if(n<0||n>=words.length)return; fcSeen.add(fcIdx); fcIdx=n; fcFlipped=false; renderCards(); }
-function fcJump(i){ fcSeen.add(fcIdx); fcIdx=i; fcFlipped=false; renderCards(); }
+
+function setLoading(b) {
+  const btn = document.getElementById('addBtn');
+  btn.innerHTML = b ? '<div class="ring"></div>' : '→';
+  btn.disabled = b;
+}
+
+function save() { localStorage.setItem(LS_KEY, JSON.stringify(words)); }
+
+function render() {
+  document.getElementById('wordCount').textContent = `${words.length} mots`;
+  const list = document.getElementById('wordList');
+  list.innerHTML = words.map(w => `
+    <div class="wrow ${openId === w.id ? 'open' : ''}">
+      <div class="wrow-top" onclick="toggleRow(${w.id})">
+        <span class="wrow-word">${w.term}</span>
+        <span style="font-size:10px; color:var(--muted)">${openId === w.id ? '▲' : '▼'}</span>
+      </div>
+      ${openId === w.id ? `
+        <div class="wrow-body">
+          <span class="trad-main">${w.translation}</span>
+          ${buildDictUI(w.data)}
+          <button class="wrow-del" onclick="deleteWord(${w.id})">Supprimer ce mot</button>
+        </div>
+      ` : ''}
+    </div>
+  `).join('');
+}
+
+function buildDictUI(data) {
+  if(!data) return '<p style="color:var(--muted)">Définition non trouvée.</p>';
+  return data.meanings.map(m => `
+    <div class="dict-section">
+      <span class="dict-pos">${m.partOfSpeech}</span>
+      ${m.definitions.slice(0, 2).map((d, i) => `
+        <div class="dict-entry">
+          <div class="dict-def-line">
+            <span class="dict-num">${i+1}.</span>
+            <span class="dict-text">${d.definition}</span>
+          </div>
+          ${d.example ? `<span class="dict-ex">"${d.example}"</span>` : ''}
+          ${d.synonyms && d.synonyms.length ? `
+            <div class="dict-similar-box">
+              <span class="similar-label">Similar:</span>
+              <div class="similar-tags">
+                ${d.synonyms.slice(0, 8).map(s => `<span class="sim-tag">${s}</span>`).join('')}
+              </div>
+            </div>
+          ` : ''}
+        </div>
+      `).join('')}
+    </div>
+  `).join('');
+}
+
+function toggleRow(id) { openId = openId === id ? null : id; render(); }
+function deleteWord(id) { words = words.filter(x => x.id !== id); save(); render(); }
+
+function setMode(m) {
+  mode = m;
+  document.getElementById('listMode').style.display = m === 'list' ? 'block' : 'none';
+  document.getElementById('cardsMode').style.display = m === 'cards' ? 'block' : 'none';
+  document.getElementById('btnList').classList.toggle('on', m === 'list');
+  document.getElementById('btnCards').classList.toggle('on', m === 'cards');
+  if(m === 'cards') renderCard();
+}
+
+function renderCard() {
+  if(!words.length) return;
+  const w = words[fcIdx];
+  document.getElementById('fcWord').textContent = w.term;
+  document.getElementById('fcTrad').textContent = w.translation;
+  document.getElementById('fcDef').textContent = w.data?.meanings[0]?.definitions[0]?.definition || '';
+  document.getElementById('fcCard').classList.toggle('flipped', fcFlipped);
+}
+
+function flipCard() { fcFlipped = !fcFlipped; renderCard(); }
+function fcGo(dir) {
+  fcIdx = (fcIdx + dir + words.length) % words.length;
+  fcFlipped = false;
+  renderCard();
+}
+
+function toggleTheme() {
+  document.body.classList.toggle('light');
+  const isLight = document.body.classList.contains('light');
+  document.getElementById('themeBtn').textContent = isLight ? '🌙' : '☀️';
+  document.getElementById('themeColor').content = isLight ? '#f7f4ef' : '#0f0e0c';
+}
+
+render();
 </script>
 </body>
 </html>
