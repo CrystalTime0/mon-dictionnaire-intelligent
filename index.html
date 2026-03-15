@@ -46,6 +46,11 @@
 
         .header-btn{background:var(--surface);border:1px solid var(--border);padding:6px 10px;border-radius:8px;cursor:pointer}
 
+        .toolbar{display:flex;gap:8px;margin-bottom:16px}
+        .io-btn{padding:6px 12px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.04em;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--muted);cursor:pointer;transition:all .15s}
+        .io-btn:hover{border-color:var(--accent);color:var(--accent)}
+        .io-btn.imp:hover{border-color:var(--accent2);color:var(--accent2)}
+
         /* ── Flashcard overlay wrapper (file 2) ── */
         .flashcard-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;padding:20px;z-index:100}
         .flashcard-box{background:var(--surface);border-radius:20px;padding:30px 24px;max-width:500px;width:100%;text-align:center;border:1px solid var(--border)}
@@ -98,6 +103,12 @@
         <input type="text" id="wordInput" placeholder="Rechercher un mot...">
         <button id="addBtn" onclick="handleAdd()">Ajouter</button>
     </div>
+
+    <div class="toolbar">
+        <button class="io-btn" onclick="exportJSON()">↓ Exporter JSON</button>
+        <button class="io-btn imp" onclick="document.getElementById('importFile').click()">↑ Importer JSON</button>
+    </div>
+    <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(event)">
 
     <div id="wordsList"></div>
 
@@ -283,6 +294,38 @@ ${d.example?`<span class="example">"${d.example}"</span>`:''}
 
         document.getElementById('themeColor').content=isDark?'#0f0e0c':'#f7f4ef';
 
+    }
+
+    /* ------------------ EXPORT / IMPORT ------------------ */
+
+    function exportJSON(){
+        const blob = new Blob([JSON.stringify(words, null, 2)], {type:'application/json'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `mon-dico-${new Date().toISOString().slice(0,10)}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    function importJSON(e){
+        const file = e.target.files?.[0];
+        if(!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            try{
+                const parsed = JSON.parse(ev.target.result);
+                if(!Array.isArray(parsed)) throw new Error();
+                const existing = new Set(words.map(w=>w.term.toLowerCase()));
+                const newOnes = parsed.filter(w=>w.term && !existing.has(w.term.toLowerCase()));
+                words = [...newOnes, ...words];
+                localStorage.setItem('dico_data', JSON.stringify(words));
+                render();
+                alert(`${newOnes.length} mot${newOnes.length!==1?'s':''} importé${newOnes.length!==1?'s':''} ✓`);
+            }catch{ alert('Fichier invalide ✗'); }
+        };
+        reader.readAsText(file);
+        e.target.value='';
     }
 
     /* ------------------ FLASHCARDS (from file 1) ------------------ */
