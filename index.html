@@ -223,7 +223,8 @@
     </div>
 
     <div class="search-box">
-        <input type="text" id="wordInput" placeholder="Rechercher un mot...">
+        <input type="text" id="wordInput" placeholder="Rechercher un mot..." onkeydown="if(event.key==='Enter')handleAdd()">
+        <button id="pasteBtn" onclick="pasteAndAdd()" title="Coller et ajouter" style="background:var(--card);border:1px solid var(--border);padding:8px 11px;border-radius:8px;cursor:pointer;font-size:15px;color:var(--muted);transition:all .15s" onmouseenter="this.style.borderColor='var(--accent)'" onmouseleave="this.style.borderColor='var(--border)'">📋</button>
         <button id="addBtn" onclick="handleAdd()">Ajouter</button>
     </div>
 
@@ -474,6 +475,37 @@
     /* ═══════════════════════════════════════
        ADD WORD
     ═══════════════════════════════════════ */
+    async function pasteAndAdd(){
+        const btn = document.getElementById('pasteBtn');
+        let term = '';
+
+        // Try modern clipboard API first
+        if(navigator?.clipboard?.readText){
+            try{
+                const text = await navigator.clipboard.readText();
+                term = text.trim().split(/\s+/)[0].toLowerCase().replace(/[^a-zA-Z'-]/g,'');
+            }catch(e){ /* permission denied */ }
+        }
+
+        // Fallback: use a hidden textarea + execCommand
+        if(!term){
+            const ta = document.createElement('textarea');
+            ta.style.cssText = 'position:fixed;opacity:0;top:0;left:0';
+            document.body.appendChild(ta);
+            ta.focus();
+            try{
+                document.execCommand('paste');
+                term = ta.value.trim().split(/\s+/)[0].toLowerCase().replace(/[^a-zA-Z'-]/g,'');
+            }catch(e){}
+            document.body.removeChild(ta);
+        }
+
+        if(!term){ btn.textContent='?'; setTimeout(()=>btn.textContent='📋',1200); return; }
+
+        document.getElementById('wordInput').value = term;
+        await handleAdd();
+    }
+
     async function handleAdd(){
         const input = document.getElementById('wordInput');
         const term  = input.value.trim().toLowerCase();
@@ -783,6 +815,21 @@ ${d.example?`<span class="example">"${esc(d.example)}"</span>`:''}
     /* ─── Init ─── */
     render();
     document.getElementById('sortDate').classList.add('on');
+
+    // ── Share Target : handle ?shared_text=... from OS share sheet ──
+    (function handleShareTarget(){
+        const params = new URLSearchParams(window.location.search);
+        const shared = (params.get('shared_text') || params.get('shared_title') || '').trim();
+        if(!shared) return;
+        // Clean URL so reload doesn't re-trigger
+        history.replaceState({}, '', window.location.pathname);
+        // Extract first word (might be a full sentence or URL)
+        const word = shared.split(/\s+/)[0].toLowerCase().replace(/[^a-zA-Z'-]/g, '');
+        if(!word) return;
+        // Pre-fill input and trigger add after a short delay (let page render first)
+        document.getElementById('wordInput').value = word;
+        setTimeout(handleAdd, 300);
+    })();
 </script>
 </body>
 </html>
