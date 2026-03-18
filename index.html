@@ -639,7 +639,6 @@ ${d.example?`<span class="example">"${esc(d.example)}"</span>`:''}
             try{
                 const parsed = JSON.parse(ev.target.result);
 
-                // Support ancien format (tableau de mots) et nouveau format (objet v2)
                 let inWords, inNodes;
                 if(Array.isArray(parsed)){
                     inWords = parsed; inNodes = [];
@@ -647,29 +646,49 @@ ${d.example?`<span class="example">"${esc(d.example)}"</span>`:''}
                     inWords = parsed.words; inNodes = parsed.nodes || [];
                 } else { throw new Error(); }
 
+                // ── Migrate old "list" string field → listId ──
+                // Collect unique old-style list names
+                const oldListNames = [...new Set(inWords.map(w=>w.list).filter(Boolean))];
+                const oldListMap = {}; // name → new node id
+                if(oldListNames.length){
+                    oldListNames.forEach(name => {
+                        // Check if a node with this name already exists in inNodes
+                        let node = inNodes.find(n=>!n.isFolder && n.name===name);
+                        if(!node){
+                            const newId = uid();
+                            node = { id: newId, name, isFolder: false, parentId: null };
+                            inNodes.push(node);
+                        }
+                        oldListMap[name] = node.id;
+                    });
+                    // Convert old list string to listId
+                    inWords.forEach(w => {
+                        if(w.list && !w.listId){
+                            w.listId = oldListMap[w.list];
+                            delete w.list;
+                        }
+                    });
+                }
+
                 // Merge mots (pas de doublon)
                 const exWords = new Set(words.map(w=>w.term.toLowerCase()));
                 const newWords = inWords.filter(w=>w.term && !exWords.has(w.term.toLowerCase()));
 
-                // Merge nodes : on réassigne des nouveaux IDs aux noeuds importés
-                // pour éviter les collisions, et on remet à jour les listId des mots importés
-                const idMap = {};  // oldId -> newId
+                // Merge nodes avec réassignation des IDs pour éviter collisions
+                const idMap = {};
                 const newNodes = inNodes.map(n => {
                     const newId = uid();
                     idMap[n.id] = newId;
                     return { ...n, id: newId, parentId: n.parentId ?? null };
                 });
-                // Fix parentId references
                 newNodes.forEach(n => {
                     if(n.parentId && idMap[n.parentId]) n.parentId = idMap[n.parentId];
                 });
-                // Fix listId references in imported words
                 newWords.forEach(w => {
                     if(w.listId && idMap[w.listId]) w.listId = idMap[w.listId];
-                    else if(w.listId && !idMap[w.listId]) w.listId = null; // liste inconnue
+                    else if(w.listId && !idMap[w.listId]) w.listId = null;
                 });
 
-                // Fusionner les noeuds en évitant les doublons de nom au même niveau
                 const exNodeKeys = new Set(nodes.map(n=>`${n.parentId||''}|${n.name.toLowerCase()}`));
                 const filteredNodes = newNodes.filter(n => !exNodeKeys.has(`${n.parentId||''}|${n.name.toLowerCase()}`));
 
@@ -827,15 +846,19 @@ ${d.example?`<span class="example">"${esc(d.example)}"</span>`:''}
         const params = new URLSearchParams(window.location.search);
         const shared = (params.get('shared_text') || params.get('shared_title') || '').trim();
         if(!shared) return;
-        // Clean URL so reload doesn't re-trigger
         history.replaceState({}, '', window.location.pathname);
-        // Extract first word (might be a full sentence or URL)
         const word = shared.split(/\s+/)[0].toLowerCase().replace(/[^a-zA-Z'-]/g, '');
         if(!word) return;
-        // Pre-fill input and trigger add after a short delay (let page render first)
         document.getElementById('wordInput').value = word;
         setTimeout(handleAdd, 300);
     })();
+
+    // ── Service Worker registration (required for PWA install) ──
+    if('serviceWorker' in navigator){
+        navigator.serviceWorker.register('./sw.js', {scope: './'})
+                .then(r => console.log('SW registered:', r.scope))
+                .catch(e => console.warn('SW registration failed:', e));
+    }
 </script>
 </body>
 </html>
